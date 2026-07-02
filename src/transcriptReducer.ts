@@ -96,8 +96,18 @@ export function reducer(state: TranscriptState, action: Action): TranscriptState
         }
         case "tool_dispatch": {
           if (e.tool) {
-            const id = nextId("t");
-            s.items.push({ kind: "tool", id, tool: e.tool as WireTool, status: "running", outputText: "" });
+            const t = e.tool as WireTool;
+            // If a tool with this ID already exists (e.g. partial → full dispatch), update it
+            let existing = -1;
+            for (let i = s.items.length - 1; i >= 0; i--) {
+              if (s.items[i]?.kind === "tool" && s.items[i].tool.id === t.id) { existing = i; break; }
+            }
+            if (existing >= 0) {
+              s.items[existing] = { ...s.items[existing], tool: t, status: "running", outputText: "" };
+            } else {
+              const id = nextId("t");
+              s.items.push({ kind: "tool", id, tool: t, status: "running", outputText: "" });
+            }
           }
           return s;
         }
