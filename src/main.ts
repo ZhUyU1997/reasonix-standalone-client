@@ -145,6 +145,14 @@ window.addEventListener("__new-session", () => {
   const d = getDispatch();
   if (d) d({ type: "clear" });
   todosState = []; todosDismissed = false;
+  // fetch new session's history + todos (matches original 300ms delay)
+  setTimeout(() => {
+    getJSON<HistoryMessage[]>("/history").then(msgs => {
+      const d2 = getDispatch();
+      if (d2) d2({ type: "history", messages: msgs });
+      fetchTodos();
+    }).catch(() => {});
+  }, 300);
 });
 window.addEventListener("__open-rewind", () => openRewindPicker(__));
 
