@@ -221,7 +221,7 @@ connectSSE(
     if (e.kind !== "retrying") clearRetrying();
     switch (e.kind) {
       case "turn_started": setRunning(true); finalizeMsg(msgState); Object.keys(toolCards).forEach(k => delete toolCards[k]); todosDismissed = false; break;
-      case "reasoning": msgState.currentReasoning = null; appendReasoning(log, welcome, msgState, e.reasoning || e.text || "", __, scrollDown); break;
+      case "reasoning": appendReasoning(log, welcome, msgState, e.reasoning || e.text || "", __, scrollDown); break;
       case "text": msgState.currentReasoning = null; appendText(log, welcome, msgState, e.text || "", scrollDown); break;
       case "message": finalizeMsg(msgState); break;
       case "tool_dispatch": if (e.tool) renderToolDispatch(log, e.tool, toolCards, welcome, scrollDown); break;
