@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reasonix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<button class="menu-btn" id="menu-btn" aria-label="Toggle sidebar">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <div class="sidebar__logo">R</div>
+      <span class="sidebar__name">Reasonix</span>
+    </div>
+    <nav class="sidebar__nav" style="border-top:none;padding-top:0">
+      <div class="sidebar__item sidebar__item--accent" id="btn-new">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span>__('new_session')</span>
+      </div>
+      <div class="sidebar__item" id="btn-compact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        <span>__('compact')</span>
+      </div>
+      <div class="sidebar__item" id="btn-rewind">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        <span>__('rewind')</span>
+      </div>
+      <div class="sidebar__item" id="btn-tree">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+        <span>__('branches')</span>
+      </div>
+      <div class="sidebar__sep"></div>
+      <div class="sidebar__item" id="btn-stats">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        <span>__('stats')</span>
+      </div>
+    </nav>
+    <div class="sidebar__label" style="padding:8px 10px 4px">__('sessions')</div>
+    <div class="session-list" id="session-list">
+      <div style="padding:10px;color:var(--muted-2);font-size:12px">__('loading')</div>
+    </div>
+    <div class="sidebar__section">
+      <div class="sidebar__label">__('status')</div>
+      <div class="sidebar__ctx">
+        <div class="ctx-bar"><div class="ctx-bar__fill" id="ctx-fill" style="width:0%"></div></div>
+        <div class="ctx-label"><span id="ctx-used">0 tok</span><span id="ctx-window">0 tok</span></div>
+      </div>
+      <div class="status-metrics" id="status-metrics">
+        <div class="sm-item"><span class="sm-val" id="sm-cache">—</span><span>__('cache')</span></div>
+        <div class="sm-item"><span class="sm-val" id="sm-cost">—</span><span>__('cost')</span></div>
+        <div class="sm-item"><span class="sm-val acc" id="sm-balance">—</span><span>__('balance')</span></div>
+      </div>
+      <div style="padding:4px 10px">
+        <div class="status" id="sidebar-status"><span class="status__dot" id="status-dot"></span><span id="status-model">-</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <section class="transcript" id="log">
+    <div class="welcome" id="welcome">
+      <div class="welcome__logo">R</div>
+      <div class="welcome__title">Reasonix</div>
+      <div class="welcome__tag">__('welcome_tag')</div>
+      <div class="welcome__hints">
+        <span><kbd>/</kbd> __('hint_commands')</span>
+        <span><kbd>Shift+Tab</kbd> __('hint_mode')</span>
+        <span><kbd>Ctrl+Y</kbd> __('hint_yolo')</span>
+        <span><kbd>Esc&times;2</kbd> __('hint_rewind')</span>
+      </div>
+      <div class="welcome__examples">
+        <button class="welcome__ex" data-prompt="">__('example_explain')</button>
+        <button class="welcome__ex" data-prompt="">__('example_fix')</button>
+        <button class="welcome__ex" data-prompt="">__('example_test')</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div id="slash-menu-anchor"></div>
+    <div id="goal-active-bar" style="margin-bottom:6px;display:none">
+      <span class="goal-chip" id="goal-chip" title="__('goal_exit')">
+        <svg class="goal-chip__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg>
+        <span class="goal-chip__text" id="goal-chip-text"></span>
+        <span class="goal-chip__close">&times;</span>
+      </span>
+    </div>
+    <div id="todo-panel" class="todos">
+      <div class="todos__head" id="todos-head">
+        <span class="todos__title" id="todos-title">To-dos</span>
+        <span class="todos__badge" id="todos-badge"></span>
+        <span class="todos__summary" id="todos-summary"></span>
+        <span class="todos__dismiss" id="todos-dismiss" title="Close" style="display:none">&times;</span>
+        <span class="todos__chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </div>
+      <ul class="todos__list" id="todos-list"></ul>
+    </div>
+    <div class="toolbar">
+      <button class="toolbar__btn toolbar__btn--ok" id="btn-auto" title="__('auto_mode')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>
+        __('auto')
+      </button>
+      <button class="toolbar__btn" id="btn-plan" title="__('plan_mode')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        __('plan')
+      </button>
+      <button class="toolbar__btn" id="btn-bypass" title="__('yolo_mode')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        __('yolo')
+      </button>
+      <button class="toolbar__btn" id="btn-goal" title="__('goal_mode_desc')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
+        __('goal_btn')
+      </button>
+      <div class="toolbar__sep"></div>
+      <div class="status">
+        <span class="status__dot" id="status-dot-footer"></span>
+        <span id="status-text">__('ready')</span>
+      </div>
+      <div class="toolbar__spacer"></div>
+      <div class="status" id="turn-info"></div>
+      <div class="status" id="balance-info"></div>
+    </div>
+    <div class="composer">
+      <span class="composer__caret">&#8250;</span>
+      <textarea class="composer__input" id="in" placeholder="__('placeholder')" rows="1" autofocus></textarea>
+      <button class="composer__btn composer__btn--send" id="btn-send" title="__('send')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+      </button>
+      <button class="composer__btn composer__btn--stop" id="btn-stop" title="__('cancel')" style="display:none">
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+      </button>
+    </div>
+  </footer>
+</div>
+
+<!-- stats modal -->
+<div class="modal-overlay" id="stats-modal" style="display:none">
+  <div class="modal">
+    <div class="modal__head">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+      __('statistics')
+      <span class="modal__close" id="stats-modal-close">&times;</span>
+    </div>
+    <div class="modal__body">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-card__label">__('model')</div><div class="stat-card__value" id="stats-model">-</div></div>
+        <div class="stat-card"><div class="stat-card__label">__('sessions')</div><div class="stat-card__value" id="stats-sessions">0</div></div>
+        <div class="stat-card"><div class="stat-card__label">__('total_tokens')</div><div class="stat-card__value acc" id="stats-total-tokens">0</div></div>
+        <div class="stat-card"><div class="stat-card__label">__('cache_hit_rate')</div><div class="stat-card__value ok" id="stats-cache-rate">0%</div></div>
+        <div class="stat-card"><div class="stat-card__label">__('total_cost')</div><div class="stat-card__value" id="stats-total-cost">-</div></div>
+        <div class="stat-card"><div class="stat-card__label">__('balance')</div><div class="stat-card__value" id="stats-balance">-</div></div>
+        <div class="stat-card stat-card--wide">
+          <div class="stat-card__label">__('context_usage')</div>
+          <div class="ctx-bar" style="margin-top:8px"><div class="ctx-bar__fill" id="stats-ctx-fill" style="width:0%"></div></div>
+          <div class="ctx-label" style="margin-top:4px"><span id="stats-ctx-used">0 tok</span><span id="stats-ctx-window">0 tok</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

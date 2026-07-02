@@ -1,0 +1,37 @@
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  server: {
+    proxy: {
+      "/events":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/submit":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/cancel":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/approve":         { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/deny":            { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/plan":            { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/compact":         { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/new":             { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/resume":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/rewind":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/fork":            { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/summarize":       { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/history":         { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/status":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/context":         { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/sessions":        { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/checkpoints":     { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/todos":           { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/skills":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/branches":        { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/goal":            { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/answer":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/forget":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/generate-title":  { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/switch-model":    { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/switch-effort":   { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/delete-session":  { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/tool-approval-mode": { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/bypass":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+    },
+  },
+})
