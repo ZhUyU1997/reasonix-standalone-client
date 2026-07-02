@@ -121,11 +121,6 @@ export interface TodoItem {
   level?: number;
 }
 
-export interface MessageState {
-  currentMsg: HTMLElement | null;
-  currentText: HTMLElement | null;
-  currentReasoning: HTMLElement | null;
-}
 
 export interface SlashCmd {
   cmd: string;
