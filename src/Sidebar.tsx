@@ -40,7 +40,7 @@ export function Sidebar({ running }: SidebarProps) {
   // stats modal
   const [showStats, setShowStats] = useState(false);
   const [connState, setConnState] = useState("connected");
-  const [statsData, setStatsData] = useState({ count: 0, tokens: 0, cost: 0, cacheHit: 0, cacheMiss: 0 });
+  const [statsData, setStatsData] = useState({ model: "-", count: 0, tokens: 0, cost: 0, currency: "", cacheHit: 0, cacheMiss: 0, used: 0, window: 0, balance: "-" });
 
   // ── fetch sessions ──
   const fetchSessions = useCallback(async () => {
@@ -98,11 +98,23 @@ export function Sidebar({ running }: SidebarProps) {
   const handleCompact = () => { if (!running) post("/compact"); };
   const handleRewind = () => { window.dispatchEvent(new CustomEvent("__open-rewind")); };
   const handleTree = () => { post("/submit", { input: "/tree" }); };
-  const handleStats = () => {
-    setStatsData({
-      count: sessions.length,
-      tokens: 0, cost: 0, cacheHit: 0, cacheMiss: 0,
-    });
+  const handleStats = async () => {
+    try {
+      const s = await getJSON<any>('/status');
+      const cum: any = (window as any).__cumulativeStats?.() || {};
+      setStatsData({
+        model: s.label || '-',
+        count: sessions.length,
+        tokens: cum.tokens || s.used || 0,
+        cost: cum.cost || s.lastUsage?.cost || 0,
+        currency: s.lastUsage?.currency || '',
+        cacheHit: cum.cacheHit || s.cacheHit || 0,
+        cacheMiss: cum.cacheMiss || s.cacheMiss || 0,
+        used: s.used || 0,
+        window: s.window || 0,
+        balance: s.balance?.display || '-',
+      });
+    } catch { /* ignore */ }
     setShowStats(true);
   };
 
@@ -234,36 +246,49 @@ export function Sidebar({ running }: SidebarProps) {
       {showStats && (
         <div className="modal-overlay" id="stats-modal" style={{ display: "flex" }} onClick={() => setShowStats(false)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
-            <div className="modal__title">{__("statistics")}</div>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "12px" }}>
-              <div className="stat-card">
-                <div className="stat-card__value">{statsData.count}</div>
-                <div className="stat-card__label">{__("sessions")}</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-card__value">{fmtTok(statsData.tokens)}</div>
-                <div className="stat-card__label">{__("total_tokens")}</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-card__value">{fmtMoney(statsData.cost)}</div>
-                <div className="stat-card__label">{__("total_cost")}</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-card__value">{statsData.cacheHit + statsData.cacheMiss > 0 ? Math.round(statsData.cacheHit / Math.max(1, statsData.cacheHit + statsData.cacheMiss) * 100) + "%" : "—"}</div>
-                <div className="stat-card__label">{__("cache_hit_rate")}</div>
-              </div>
-              <div className="stat-card" style={{ flexBasis: "100%" }}>
-                <div className="ctx-bar" style={{ marginTop: "8px" }}>
-                  <div className="ctx-bar__fill" style={{ width: ctxPct + "%", background: ctxColor }}></div>
+            <div className="modal__head">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+              {__("statistics")}
+              <span className="modal__close" id="stats-modal-close" onClick={() => setShowStats(false)}>&times;</span>
+            </div>
+            <div className="modal__body">
+              <div className="stat-grid">
+                <div className="stat-card">
+                  <div className="stat-card__label">{__("model")}</div>
+                  <div className="stat-card__value">{statsData.model}</div>
                 </div>
-                <div className="ctx-label" style={{ marginTop: "4px" }}>
-                  <span>{fmtTok(s?.used || 0)} tok</span>
-                  <span>{fmtTok(s?.window || 0)} tok</span>
+                <div className="stat-card">
+                  <div className="stat-card__label">{__("sessions")}</div>
+                  <div className="stat-card__value">{statsData.count}</div>
                 </div>
-                <div className="stat-card__label" style={{ marginTop: "6px" }}>{__("context_usage")}</div>
+                <div className="stat-card">
+                  <div className="stat-card__label">{__("total_tokens")}</div>
+                  <div className="stat-card__value acc">{statsData.tokens >= 1000 ? fmtTok(statsData.tokens) : String(statsData.tokens)}</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-card__label">{__("cache_hit_rate")}</div>
+                  <div className="stat-card__value ok">{statsData.cacheHit + statsData.cacheMiss > 0 ? Math.round(statsData.cacheHit / Math.max(1, statsData.cacheHit + statsData.cacheMiss) * 100) + "%" : "0%"}</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-card__label">{__("total_cost")}</div>
+                  <div className="stat-card__value">{statsData.cost > 0 ? fmtMoney(statsData.cost, statsData.currency) : "-"}</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-card__label">{__("balance")}</div>
+                  <div className="stat-card__value">{statsData.balance}</div>
+                </div>
+                <div className="stat-card stat-card--wide">
+                  <div className="stat-card__label">{__("context_usage")}</div>
+                  <div className="ctx-bar" style={{ marginTop: "8px" }}>
+                    <div className="ctx-bar__fill" style={{ width: Math.min(100, statsData.window > 0 ? Math.round(statsData.used / statsData.window * 100) : 0) + "%" }}></div>
+                  </div>
+                  <div className="ctx-label" style={{ marginTop: "4px" }}>
+                    <span>{fmtTok(statsData.used)} tok</span>
+                    <span>{fmtTok(statsData.window)} tok</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <button className="modal__close" id="stats-modal-close" onClick={() => setShowStats(false)}>&times;</button>
           </div>
         </div>
       )}

@@ -62,6 +62,10 @@ function setConnState(state: string): void {
   renderSB();
 }
 
+// ── cumulative stats (for stats modal) ──
+let cumulativeTokens = 0, cumulativeCost = 0, cumulativeCacheHit = 0, cumulativeCacheMiss = 0;
+(window as any).__cumulativeStats = () => ({ tokens: cumulativeTokens, cost: cumulativeCost, cacheHit: cumulativeCacheHit, cacheMiss: cumulativeCacheMiss });
+
 // ── SSE ──
 connectSSE(
   (data: unknown) => {
@@ -84,7 +88,10 @@ connectSSE(
       case "usage":
         if (e.usage) {
           if (e.usage?.completionTokens) { turnTokens = e.usage.completionTokens || 0; }
-          // metric strip — rendered by Transcript dispatch above
+          cumulativeTokens += e.usage.tokens || 0;
+          cumulativeCost += e.usage.costUsd || 0;
+          cumulativeCacheHit += e.usage.cacheHit || 0;
+          cumulativeCacheMiss += e.usage.cacheMiss || 0;
         }
         break;
       case "retrying": setRetrying(e.retryAttempt, e.retryMax); break;
