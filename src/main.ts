@@ -128,11 +128,11 @@ function fetchTodos(): void {
 }
 const todosHead = document.getElementById("todos-head") as HTMLElement | null;
 if (todosHead) {
-  todosHead.onclick = function(this: HTMLElement, e: MouseEvent) {
+  todosHead.addEventListener("click", (e: MouseEvent) => {
     if ((e.target as HTMLElement).closest(".todos__dismiss")) { todosDismissed = true; renderTodoPanel(todosState, todosDismissed); return; }
     const panel = document.getElementById("todo-panel") as HTMLElement | null;
     if (panel) panel.classList.toggle("todos--collapsed");
-  };
+  });
 }
 
 // ── rewind keyboard nav ──

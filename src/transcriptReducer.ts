@@ -2,7 +2,7 @@
  * transcriptReducer.ts — state machine for the transcript.
  * Converts SSE wire events and history into a flat Item[] array + LiveStream.
  */
-import type { WireTool, WireUsage, WireApproval, WireAsk } from "./types";
+import type { WireTool, WireUsage, WireApproval, WireAsk, HistoryMessage } from "./types";
 import type { TranscriptState, Action, Item, LiveStream, AssistantItem } from "./transcriptTypes";
 import { initialState } from "./transcriptTypes";
 
@@ -100,10 +100,11 @@ export function reducer(state: TranscriptState, action: Action): TranscriptState
             // If a tool with this ID already exists (e.g. partial → full dispatch), update it
             let existing = -1;
             for (let i = s.items.length - 1; i >= 0; i--) {
-              if (s.items[i]?.kind === "tool" && s.items[i].tool.id === t.id) { existing = i; break; }
+              const it = s.items[i];
+              if (it?.kind === "tool" && (it as any).tool.id === t.id) { existing = i; break; }
             }
             if (existing >= 0) {
-              s.items[existing] = { ...s.items[existing], tool: t, status: "running", outputText: "" };
+              s.items[existing] = { ...s.items[existing], tool: t, status: "running", outputText: "" } as Item;
             } else {
               const id = nextId("t");
               s.items.push({ kind: "tool", id, tool: t, status: "running", outputText: "" });

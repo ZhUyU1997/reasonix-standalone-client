@@ -4,7 +4,7 @@
  * static HTML content containing `__('key')` placeholders.
  */
 
-const __LANG_PREF = "__LANG__";
+const __LANG_PREF = "__LANG__" as string;
 const __LANG: string =
   (__LANG_PREF === "zh" || __LANG_PREF === "en")
     ? __LANG_PREF
