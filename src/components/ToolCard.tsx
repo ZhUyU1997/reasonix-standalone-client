@@ -1,12 +1,10 @@
 /**
  * ToolCard.tsx — renders a tool call card.
- * Matches original internal/serve/index.html behavior:
- * - dispatch: closed (data-open=false), body hidden, data-tone=accent
- * - progress: open (data-open=true), body text appended
- * - complete: data-tone=success/danger, body shows output
+ * Matches original internal/serve/index.html behavior.
  */
 import { useEffect, useState } from "react";
 import type { ToolItem } from "../lib/transcriptTypes";
+import { DiffView } from "./DiffView";
 
 interface Props {
   item: ToolItem;
@@ -22,7 +20,6 @@ export function ToolCard({ item }: Props) {
 
   const [open, setOpen] = useState(false);
 
-  // auto-open on output only if this tool had progress events (streaming tool)
   useEffect(() => {
     if (item.hadProgress && item.outputText) setOpen(true);
   }, [item.hadProgress, item.outputText]);
@@ -33,7 +30,6 @@ export function ToolCard({ item }: Props) {
 
   return (
     <div className="card" data-open={open ? "true" : "false"} data-tone={tone}>
-      {/* header */}
       <div className="card-head" onClick={() => setOpen(!open)}>
         <span className={"ico" + (isRunning ? " spin" : "")}>
           {isRunning ? (
@@ -60,12 +56,7 @@ export function ToolCard({ item }: Props) {
         </span>
       </div>
 
-      {/* card-body — output text only (no args), hidden until toggled or auto-opened on progress */}
-      {open && hasOutput && (
-        <div className="card-body">{item.outputText}</div>
-      )}
-
-      {/* err-body — always shown on error, as sibling of card-body (matching original) */}
+      {open && hasOutput && renderBody(item, t.diff)}
       {isErr && hasErrText && (
         <div className="err-body">{t.err}</div>
       )}
@@ -73,6 +64,36 @@ export function ToolCard({ item }: Props) {
   );
 }
 
+function renderBody(item: ToolItem, dvDiff: string | undefined) {
+  const t = item.tool;
+  if (dvDiff) {
+    const lang = t.name === "edit_file" ? detectLang(t.args || "") : "";
+    return (
+      <div className="card-body" style={{ padding: 0, background: "none", maxHeight: "none" }}>
+        <DiffView diff={dvDiff} language={lang} />
+      </div>
+    );
+  }
+  return <div className="card-body">{item.outputText}</div>;
+}
+
 function trunc(s: string, n: number): string {
   return s.length > n ? s.slice(0, n) + "…" : s;
+}
+
+const EXT_LANG: Record<string, string> = {
+  js: "javascript", ts: "typescript", jsx: "javascript", tsx: "typescript",
+  py: "python", rb: "ruby", go: "go", rs: "rust", sh: "bash", bash: "bash",
+  json: "json", yaml: "yaml", yml: "yaml", md: "markdown",
+  html: "html", css: "css", scss: "css", sql: "sql",
+  xml: "xml", c: "c", cpp: "cpp", h: "c", java: "java",
+};
+
+function detectLang(args: string): string {
+  try {
+    const parsed = JSON.parse(args);
+    const path = parsed.file_path || parsed.path || "";
+    const ext = path.split(".").pop()?.toLowerCase() || "";
+    return EXT_LANG[ext] || ext || "";
+  } catch { return ""; }
 }
