@@ -38,9 +38,11 @@ interface ComposerProps {
   goalActive: boolean;
   goalText: string;
   onOpenRewind?: () => void;
+  onShiftTab?: () => void;
+  onCtrlY?: () => void;
 }
 
-export function Composer({ running, onSend, onStop, goalActive, goalText, onOpenRewind }: ComposerProps) {
+export function Composer({ running, onSend, onStop, goalActive, goalText, onOpenRewind, onShiftTab, onCtrlY }: ComposerProps) {
   const [text, setText] = useState("");
   const [slashOpen, setSlashOpen] = useState(false);
   const [slashIndex, setSlashIndex] = useState(0);
@@ -125,16 +127,13 @@ export function Composer({ running, onSend, onStop, goalActive, goalText, onOpen
       // Shift+Tab mode cycle
       if (e.key === "Tab" && e.shiftKey) {
         e.preventDefault();
-        // Trigger mode cycle via programmatic click on plan btn
-        const autoBtn = document.getElementById("btn-auto") as HTMLElement | null;
-        if (autoBtn) autoBtn.click();
+        if (onShiftTab) onShiftTab();
         return;
       }
       // Ctrl+Y toggle yolo
       if ((e.key === "y" || e.key === "Y") && (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey) {
         e.preventDefault();
-        const yoloBtn = document.getElementById("btn-bypass") as HTMLElement | null;
-        if (yoloBtn) yoloBtn.click();
+        if (onCtrlY) onCtrlY();
         return;
       }
       // Esc handling

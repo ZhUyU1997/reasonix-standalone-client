@@ -39,16 +39,7 @@ export function SessionList({ onResume }: SessionListProps) {
   const handleClick = (s: SessionMeta) => {
     if (s.current) return;
     app.ResumeSession(s.path).then(() => {
-      const log = document.getElementById("log");
-      const welcome = document.getElementById("welcome");
-      if (log) {
-        log.innerHTML = "";
-        if (welcome) { log.appendChild(welcome); welcome.style.display = ""; }
-      }
       load();
-      setTimeout(() => {
-        (window as any).__reloadHistory?.();
-      }, 300);
     });
   };
 

@@ -13,6 +13,7 @@ import { Composer } from "./components/Composer";
 import { TodoPanel } from "./components/TodoPanel";
 import { RewindModal } from "./components/RewindModal";
 import { useLayoutStore } from "./lib/store/layout";
+import { app } from "./lib/bridge";
 import { useController } from "./lib/useController";
 import { fmtElapsed, fmtTok } from "./lib/ui";
 
@@ -68,6 +69,8 @@ export default function App() {
             goalActive={false}
             goalText=""
             onOpenRewind={openRewind}
+            onShiftTab={() => app.Balance().then(s => app.SetToolApprovalMode(s.toolApprovalMode === "auto" ? "ask" : "auto"))}
+            onCtrlY={() => app.SetToolApprovalMode("yolo")}
           />
         </div>
       </footer>
