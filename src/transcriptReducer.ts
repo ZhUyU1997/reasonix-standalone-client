@@ -23,13 +23,6 @@ function ensureAssistant(s: TranscriptState): { id: string; seq: number } {
   return { id, seq: 0 };
 }
 
-function lastToolId(s: TranscriptState): string | null {
-  for (let i = s.items.length - 1; i >= 0; i--) {
-    if (s.items[i]?.kind === "tool") return s.items[i].id;
-  }
-  return null;
-}
-
 // ── reducer ──
 
 export function reducer(state: TranscriptState, action: Action): TranscriptState {
@@ -115,10 +108,9 @@ export function reducer(state: TranscriptState, action: Action): TranscriptState
         case "tool_result": {
           if (e.tool) {
             const t = e.tool as WireTool;
-            const tid = lastToolId(s);
             for (let i = s.items.length - 1; i >= 0; i--) {
               const item = s.items[i];
-              if (item?.kind === "tool" && (item.tool.id === t.id || item.tool.name === t.name)) {
+              if (item?.kind === "tool" && (t.id !== "" ? item.tool.id === t.id : item.tool.name === t.name)) {
                 s.items[i] = { ...item, tool: t, status: t.err ? "error" : "done", outputText: t.output || "" };
                 break;
               }
