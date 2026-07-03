@@ -2,35 +2,29 @@
  * Transcript.tsx — main transcript component.
  * Renders welcome + message items, handles auto-scroll during streaming.
  */
-import { useEffect, useReducer, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { __ } from "../lib/i18n";
-import { reducer } from "../lib/transcriptReducer";
-import type { TranscriptState, Action, Item, LiveStream } from "../lib/transcriptTypes";
-import { initialState } from "../lib/transcriptTypes";
+import type { Item, LiveStream } from "../lib/transcriptTypes";
 import { ChatMessage } from "./ChatMessage";
 import { ToolCard } from "./ToolCard";
 import { ApprovalCard } from "./ApprovalCard";
 import { AskCard } from "./AskCard";
 import { fmtMoney, fmtTok } from "../lib/ui";
 
-// expose a dispatch function so main.ts SSE handler can send events
-let _dispatch: ((a: Action) => void) | null = null;
-export function getDispatch(): (a: Action) => void {
-  return (a: Action) => _dispatch?.(a);
+interface TranscriptProps {
+  items: Item[];
+  live: LiveStream | null;
+  dispatch: (a: any) => void;
 }
 
-export function Transcript() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+export function Transcript({ items, live: liv, dispatch }: TranscriptProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const parentRef = useRef<HTMLElement | null>(null);
   const stickRef = useRef(true);
   const autoScrollFrame = useRef<number | null>(null);
 
-  // expose dispatch globally
-  _dispatch = dispatch;
   useEffect(() => {
     parentRef.current = document.getElementById("transcript-root");
-    return () => { _dispatch = null; };
   }, []);
 
   // auto-scroll during streaming
@@ -44,9 +38,9 @@ export function Transcript() {
       if (!stickRef.current || !el) return;
       el.scrollTop = el.scrollHeight;
     });
-  }, [state.items.length, state.live?.text?.length ?? 0, state.live?.reasoning?.length ?? 0]);
+  }, [items.length, liv?.text?.length ?? 0, liv?.reasoning?.length ?? 0]);
 
-  const live = state.live;
+  const live = liv;
 
   const scrollDown = useCallback(() => {
     const el = parentRef.current || scrollRef.current;
@@ -58,7 +52,7 @@ export function Transcript() {
     (window as any).__setComposerText?.(text);
   };
 
-  const isEmpty = state.items.length === 0 && !live;
+  const isEmpty = items.length === 0 && !live;
 
   return (
     <section className="transcript" id="log" ref={scrollRef}
@@ -89,7 +83,7 @@ export function Transcript() {
       )}
 
       {/* message items */}
-      {state.items.map((item) => {
+      {items.map((item) => {
         switch (item.kind) {
           case "user":
           case "assistant":
@@ -137,7 +131,7 @@ export function Transcript() {
       })}
 
       {/* live assistant (streaming, not yet in items) */}
-      {live && state.items.every(it => it.id !== live.id) && (
+      {live && items.every(it => it.id !== live.id) && (
         <ChatMessage
           item={{ kind: "assistant", id: live.id, text: live.text, reasoning: live.reasoning, streaming: true, reasoningComplete: live.reasoningComplete }}
           live={live}

@@ -7,7 +7,6 @@ import { __ } from "../lib/i18n";
 import { app } from "../lib/bridge";
 import { escHtml, escAttr, fmtTok, fmtMoney } from "../lib/ui";
 import type { SessionMeta } from "../lib/types";
-import { useApp } from "../lib/AppContext";
 
 interface StatusSnapshot {
   label: string;
@@ -23,13 +22,19 @@ interface StatusSnapshot {
   goalStatus?: string;
 }
 
-export function Sidebar() {
+interface SidebarProps {
+  running: boolean;
+  connState: string;
+  onNewSession: () => void;
+  onOpenRewind: () => void;
+}
+
+export function Sidebar({ running, connState, onNewSession, onOpenRewind }: SidebarProps) {
   const [sessions, setSessions] = useState<SessionMeta[]>([]);
   const [status, setStatus] = useState<StatusSnapshot | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   // stats modal
   const [showStats, setShowStats] = useState(false);
-  const { running, connState, onNewSession, onOpenRewind } = useApp();
   const [statsData, setStatsData] = useState({ model: "-", count: 0, tokens: 0, cost: 0, currency: "", cacheHit: 0, cacheMiss: 0, used: 0, window: 0, balance: "-" });
 
   // ── fetch sessions ──

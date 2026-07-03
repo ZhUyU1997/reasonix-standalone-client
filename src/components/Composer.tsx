@@ -4,7 +4,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { __ } from "../lib/i18n";
 import { app } from "../lib/bridge";
-import { getDispatch } from "./Transcript";
 
 interface SlashCmd {
   cmd: string;
@@ -66,9 +65,6 @@ export function Composer({ running, onSend, onStop, goalActive, goalText }: Comp
     if (goalActive && !v.startsWith("/goal")) {
       submitInput = "/goal " + v;
     }
-    // dispatch user message to Transcript state (instead of vanilla DOM)
-    const d = getDispatch();
-    if (d) d({ type: "user", text: v });
     onSend(submitInput);
     setText("");
     setSlashOpen(false);
