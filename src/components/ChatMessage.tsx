@@ -24,21 +24,25 @@ export function ChatMessage({ item, live }: Props) {
 
   // assistant
   const text = live?.id === item.id ? (live?.text || "") : (item.text || "");
-  const reasoning = live?.id === item.id ? (live?.reasoning || "") : (item.reasoning || "");
+  const rawReasoning = live?.id === item.id ? (live?.reasoning || "") : (item.reasoning || "");
+  const reasoning = rawReasoning;
+  const reasoningComplete = live?.id === item.id ? (live?.reasoningComplete ?? false) : (item as any).reasoningComplete ?? false;
   const isStreaming = live?.id === item.id || item.streaming;
   const [showReasoning, setShowReasoning] = useState(false);
 
   return (
     <div className="msg msg--assistant">
-      {/* reasoning toggle — matches original: inserted BEFORE text */}
+      {/* reasoning toggle — matches desktop: shows thinking+meta suffix */}
       {reasoning && (
         <div className="reasoning">
           <button
             className="reasoning__toggle"
+            data-running={isStreaming && !reasoningComplete ? "" : undefined}
             onClick={() => setShowReasoning(!showReasoning)}
           >
             <span className={"reasoning__chevron" + (showReasoning ? " reasoning__chevron--open" : "")}>&#9654;</span>
             {" "}{__("thinking")}
+            <span className="reasoning__meta">{isStreaming && !reasoningComplete ? "…" : "✓"}</span>
           </button>
           {showReasoning && (
             <div className="reasoning__body">{reasoning}</div>
