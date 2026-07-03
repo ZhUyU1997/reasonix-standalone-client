@@ -102,8 +102,29 @@ export function Transcript({ items, live: liv, dispatch }: TranscriptProps) {
             return <div key={item.id} className={"notice" + (item.level === "warn" ? " notice--warn" : "")}>{item.level === "warn" ? "! " : ""}{item.text}</div>;
           case "compaction":
             return (
-              <div key={item.id} className={item.pending ? "phase" : "notice compacted"}>
-                {item.pending ? __("compacting") : (__("compacted") + (item.trigger ? ` (${item.trigger})` : ""))}
+              <div key={item.id} className="compaction">
+                {item.pending ? (
+                  __("compacting")
+                ) : (
+                  <>
+                    <div className="compaction__head" onClick={() => {
+                      const body = document.getElementById("cbody-" + item.id);
+                      if (body) body.classList.toggle("compaction__body--open");
+                    }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="4 14 10 14 10 20" />
+                        <polyline points="20 10 14 10 14 4" />
+                        <line x1="14" y1="10" x2="21" y2="3" />
+                        <line x1="3" y1="21" x2="10" y2="14" />
+                      </svg>
+                      <span className="compaction__title">{__("compacted")}</span>
+                      <span>{item.messages} {__("messages")}</span>
+                    </div>
+                    {item.summary && (
+                      <div className="compaction__body" id={"cbody-" + item.id}>{item.summary}</div>
+                    )}
+                  </>
+                )}
               </div>
             );
           case "metric": {

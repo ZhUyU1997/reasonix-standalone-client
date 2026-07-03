@@ -47,6 +47,8 @@ export interface CompactItem {
   id: string;
   pending: boolean;
   trigger?: string;
+  summary?: string;
+  messages?: number;
 }
 
 export interface MetricItem {

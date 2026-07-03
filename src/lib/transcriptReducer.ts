@@ -156,7 +156,14 @@ export function reducer(state: TranscriptState, action: Action): TranscriptState
         case "compaction_started":
         case "compaction_done": {
           const pending = e.kind === "compaction_started";
-          s.items.push({ kind: "compaction", id: nextId("c"), pending, trigger: e.compaction?.trigger });
+          s.items.push({
+            kind: "compaction",
+            id: nextId("c"),
+            pending,
+            trigger: e.compaction?.trigger,
+            summary: e.compaction?.summary,
+            messages: e.compaction?.messages,
+          });
           return s;
         }
         case "retrying": {

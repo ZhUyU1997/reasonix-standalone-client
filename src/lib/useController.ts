@@ -148,7 +148,10 @@ export function useController(): Controller {
 
     // status polling
     const pollTimer = setInterval(refreshStatus, 30000);
-    return () => clearInterval(pollTimer);
+    return () => {
+      clearInterval(pollTimer);
+      app.disconnect();
+    };
   }, [refreshStatus, fetchTodos]);
 
   // Tick timer — re-render every 500ms when running so elapsed clock ticks

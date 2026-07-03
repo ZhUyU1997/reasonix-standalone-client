@@ -19,6 +19,7 @@ type ConnStateCallback = (state: "connected" | "reconnecting" | "disconnected") 
 let _onEvent: EventCallback | null = null;
 let _onReconnect: (() => void) | null = null;
 let _onConnState: ConnStateCallback | null = null;
+let _es: EventSource | null = null;
 
 // ── AppBindings implementation ──
 
@@ -55,6 +56,9 @@ export interface AppBindings {
 
   /** Start the SSE connection. Call after setting up callbacks. */
   connect(): void;
+
+  /** Close the SSE connection. */
+  disconnect(): void;
 }
 
 export const app: AppBindings = {
@@ -132,7 +136,8 @@ export const app: AppBindings = {
 
   // ── SSE connection ──
   connect(): void {
-    connectSSE(
+    if (_es) _es.close();
+    _es = connectSSE(
       (data: unknown) => { if (_onEvent) _onEvent(data as WireEvent); },
       () => { if (_onReconnect) _onReconnect(); },
       (readyState: number) => {
@@ -142,5 +147,8 @@ export const app: AppBindings = {
         }
       },
     );
+  },
+  disconnect(): void {
+    if (_es) { _es.close(); _es = null; }
   },
 };
