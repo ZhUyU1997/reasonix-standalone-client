@@ -60,15 +60,6 @@ Vite 开发服务器会自动将所有 API 调用（`/events`、`/submit`、`/hi
 ```bash
 pnpm build
 pnpm vite preview   # 运行在 http://localhost:4173
-```
-
-你也可以用任意静态文件服务器托管 `dist/` 目录：
-
-```bash
-cd dist && python3 -m http.server 8080
-```
-
-然后配置反向代理（Caddy、nginx）将 `/events`、`/submit`、`/history` 等路径转发到 `reasonix serve` 后端。
 
 ## 开发
 

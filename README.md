@@ -60,15 +60,6 @@ The Vite dev server proxies all API calls (`/events`, `/submit`, `/history`, etc
 ```bash
 pnpm build
 pnpm vite preview   # serves on http://localhost:4173
-```
-
-You can also serve the `dist/` directory with any static file server:
-
-```bash
-cd dist && python3 -m http.server 8080
-```
-
-Then set up a reverse proxy (Caddy, nginx) to forward `/events`, `/submit`, `/history` etc. to the `reasonix serve` backend.
 
 ## Development
 
