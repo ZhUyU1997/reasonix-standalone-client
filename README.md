@@ -1,5 +1,7 @@
 # reasonix-standalone-client
 
+> [中文版](README.zh.md)
+
 A standalone web client for [Reasonix](https://github.com/ZhUyU1997/DeepSeek-Reasonix), built with Vite + React + TypeScript.
 
 ## Why this exists
