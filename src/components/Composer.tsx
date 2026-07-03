@@ -3,7 +3,6 @@
  */
 import { useEffect, useRef, useState, useCallback } from "react";
 import { __ } from "../lib/i18n";
-import { app } from "../lib/bridge";
 
 interface SlashCmd {
   cmd: string;
@@ -61,9 +60,6 @@ export function Composer({ running, onSend, onStop, goalActive, goalText, onOpen
   const doSend = useCallback(async () => {
     const v = text.trim();
     if (!v) return;
-    // Sync mode before submit
-    await app.SetPlanMode(false);
-    await app.SetToolApprovalMode("ask");
     let submitInput = v;
     if (goalActive && !v.startsWith("/goal")) {
       submitInput = "/goal " + v;
