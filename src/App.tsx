@@ -12,11 +12,13 @@ import { StatusBar } from "./components/StatusBar";
 import { Composer } from "./components/Composer";
 import { TodoPanel } from "./components/TodoPanel";
 import { RewindModal } from "./components/RewindModal";
+import { useLayoutStore } from "./lib/store/layout";
 import { useController } from "./lib/useController";
 import { fmtElapsed, fmtTok } from "./lib/ui";
 
 export default function App() {
   const { state, submit, cancel, newSession, openRewind, dispatch, dismissTodos, rewindOpen, closeRewind } = useController();
+  const sidebarOpen = useLayoutStore((s) => s.sidebarOpen);
 
   // turnText is recomputed on every render (controller's tick timer keeps it alive)
   const ms = state.running ? (Date.now() - state.turnStartAt) : 0;
@@ -27,7 +29,7 @@ export default function App() {
   return (
     <>
     <div className="app">
-      <aside id="sidebar" className="sidebar" style={{ gridRow: "1/3" }}>
+      <aside id="sidebar" className={"sidebar" + (sidebarOpen ? " sidebar--open" : "")} style={{ gridRow: "1/3" }}>
         <Sidebar
           running={state.running}
           connState={state.connState}

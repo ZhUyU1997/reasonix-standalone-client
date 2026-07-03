@@ -7,6 +7,8 @@ import { __ } from "../lib/i18n";
 import { app } from "../lib/bridge";
 import { escHtml, escAttr, fmtTok, fmtMoney } from "../lib/ui";
 import type { SessionMeta } from "../lib/types";
+import { useLayoutStore } from "../lib/store/layout";
+import { useOverlaysStore } from "../lib/store/overlays";
 
 interface StatusSnapshot {
   label: string;
@@ -32,9 +34,10 @@ interface SidebarProps {
 export function Sidebar({ running, connState, onNewSession, onOpenRewind }: SidebarProps) {
   const [sessions, setSessions] = useState<SessionMeta[]>([]);
   const [status, setStatus] = useState<StatusSnapshot | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
   // stats modal
   const [showStats, setShowStats] = useState(false);
+  const toggleSidebar = useLayoutStore((s) => s.toggleSidebar);
+  const sidebarOpen = useLayoutStore((s) => s.sidebarOpen);
   const [statsData, setStatsData] = useState({ model: "-", count: 0, tokens: 0, cost: 0, currency: "", cacheHit: 0, cacheMiss: 0, used: 0, window: 0, balance: "-" });
 
   // ── fetch sessions ──
@@ -68,11 +71,6 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
     return () => window.removeEventListener("__refresh-sidebar", onRefresh);
   }, [fetchSessions, fetchStatus]);
 
-  // sync sidebar--open class on the mount point (used for mobile transform)
-  useEffect(() => {
-    const el = document.getElementById("sidebar");
-    if (el) el.classList.toggle("sidebar--open", isOpen);
-  }, [isOpen]);
 
   // ── nav handlers ──
   const handleNew = () => {
@@ -135,19 +133,17 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
   const connColors: Record<string, string> = { connected: "var(--success)", reconnecting: "var(--warning)", disconnected: "var(--danger)" };
   const isBusy = isRunning || connState === "reconnecting";
 
-  const toggleMenu = () => setIsOpen(!isOpen);
-
   return (
     <>
       {/* mobile menu button */}
-      <button className="menu-btn" id="menu-btn" aria-label="Toggle sidebar" onClick={toggleMenu}>
+      <button className="menu-btn" id="menu-btn" aria-label="Toggle sidebar" onClick={toggleSidebar}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
         </svg>
       </button>
 
-      {/* mobile overlay */}
-      {isOpen && <div className="sidebar-overlay" id="sidebar-overlay" onClick={toggleMenu}></div>}
+      {/* mobile overlay — controlled by Zustand layout store */}
+      {sidebarOpen && <div className="sidebar-overlay" id="sidebar-overlay" onClick={toggleSidebar}></div>}
 
       <div className="sidebar__brand">
           <div className="sidebar__logo">R</div>
