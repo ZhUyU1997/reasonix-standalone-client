@@ -33,6 +33,7 @@ interface SidebarProps {
 
 export function Sidebar({ running, connState, onNewSession, onOpenRewind }: SidebarProps) {
   const [sessions, setSessions] = useState<SessionMeta[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState(true);
   const [status, setStatus] = useState<StatusSnapshot | null>(null);
   // stats modal
   const [showStats, setShowStats] = useState(false);
@@ -46,6 +47,7 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
       const ss = await app.ListSessions();
       setSessions(ss || []);
     } catch {}
+    setSessionsLoading(false);
   }, []);
 
   // ── fetch status ──
@@ -180,7 +182,9 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
 
         <div className="sidebar__label" style={{ padding: "8px 10px 4px" }}>{__("sessions")}</div>
         <div className="session-list">
-          {sessions.length === 0 ? (
+          {sessionsLoading ? (
+            <div style={{ padding: "10px", color: "var(--muted-2)", fontSize: "12px" }}>{__("loading")}</div>
+          ) : sessions.length === 0 ? (
             <div style={{ padding: "10px", color: "var(--muted-2)", fontSize: "12px" }}>{__("no_sessions")}</div>
           ) : sessions.map(s => {
             const name = (s.name || "").replace(/^.*\//, "").replace(/\.jsonl$/, "");
