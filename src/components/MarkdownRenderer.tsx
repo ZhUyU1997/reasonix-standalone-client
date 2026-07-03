@@ -18,18 +18,24 @@ interface Props {
 
 export function MarkdownRenderer({ text }: Props) {
   const components: Partial<Components> = {
+    // Strip the <pre> wrapper react-markdown adds around fenced code blocks —
+    // CodeViewer renders its own <pre class="code hljs">.
+    pre: ({ children }) => <>{children}</>,
     code: ({ className, children, ...props }) => {
-      const isInline = !className;
-      if (isInline) {
-        return <code className="md-code">{String(children)}</code>;
+      const text = String(children ?? "");
+      const match = /language-([\w-]+)/.exec(className ?? "");
+      const isBlock = match !== null || text.includes("\n");
+      if (isBlock) {
+        const lang = match?.[1] || "";
+        return (
+          <CodeViewer
+            value={text.replace(/\n$/, "")}
+            language={lang || undefined}
+            maxHeight={360}
+          />
+        );
       }
-      const lang = (className || "").replace("language-", "");
-      return (
-        <CodeViewer
-          value={String(children).replace(/\n$/, "")}
-          language={lang || undefined}
-        />
-      );
+      return <code className="md-code">{text}</code>;
     },
     a: ({ href, children }) => (
       <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>
