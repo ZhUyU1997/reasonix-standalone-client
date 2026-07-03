@@ -37,7 +37,6 @@ export function ChatMessage({ item, live }: Props) {
         <div className="reasoning">
           <button
             className="reasoning__toggle"
-            data-running={isStreaming && !reasoningComplete ? "" : undefined}
             onClick={() => setShowReasoning(!showReasoning)}
           >
             <span className={"reasoning__chevron" + (showReasoning ? " reasoning__chevron--open" : "")}>

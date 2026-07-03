@@ -72,7 +72,6 @@ input,textarea{font:inherit;color:inherit}
 .reasoning__toggle{display:inline-flex;align-items:center;gap:4px;background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:2px 0;transition:color .18s ease}
 .reasoning__toggle:hover{color:var(--fg-2)}
 .reasoning__meta{font-weight:400;opacity:.6}
-.reasoning__toggle[data-running] .reasoning__meta{color:var(--accent);opacity:1;animation:pulse 1.2s ease-in-out infinite}
 .reasoning__chevron{transition:transform .15s;display:inline-block}
 .reasoning__chevron--open{transform:rotate(90deg)}
 .reasoning__body{margin-top:5px;padding:8px 12px;border-left:2px solid var(--border);color:var(--fg-2);font-size:13px;white-space:pre-wrap;line-height:1.6;background:var(--bg-2);border-radius:0 var(--radius) var(--radius) 0;max-height:280px;overflow-y:auto}
