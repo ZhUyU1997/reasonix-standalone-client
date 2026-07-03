@@ -58,15 +58,16 @@ Vite 开发服务器会自动将所有 API 调用（`/events`、`/submit`、`/hi
 ### 生产构建
 
 ```bash
-npm build
-npm vite preview   # 运行在 http://localhost:4173
+npm build          # 生成 dist/
+```
+
+> **注意：** 生产构建仅提供静态文件。API 路由（`/events`、`/submit`、`/history` 等）需要反向代理到 `reasonix serve` 后端。本地开发请使用 `npm run dev`（Vite 开发代理会自动处理）。
 
 ## 开发
 
 ```bash
-npm dev          # Vite 开发服务器（HMR）
+npm dev          # Vite 开发服务器（HMR，已配置代理）
 npm build        # TypeScript 检查 + 生产构建
-npm vite preview # 本地预览生产构建
 ```
 
 ## 项目结构

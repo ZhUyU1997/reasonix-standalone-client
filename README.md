@@ -58,15 +58,16 @@ The Vite dev server proxies all API calls (`/events`, `/submit`, `/history`, etc
 ### Production build
 
 ```bash
-npm build
-npm vite preview   # serves on http://localhost:4173
+npm build          # produces dist/
+```
+
+> **Note:** The production build serves static files only. API routes (`/events`, `/submit`, `/history`, etc.) require a reverse proxy to `reasonix serve`. For local development, use `npm run dev` (Vite's dev proxy handles this automatically).
 
 ## Development
 
 ```bash
-npm dev          # Vite dev server with HMR
+npm dev          # Vite dev server with HMR (proxy configured)
 npm build        # TypeScript check + production build
-npm vite preview # Preview production build locally
 ```
 
 ## Project structure
