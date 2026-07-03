@@ -9,7 +9,7 @@
 import { post, getJSON, connectSSE } from "./api";
 import type {
   HistoryMessage, SessionMeta, StatusResponse, TodoItem,
-  WireEvent, SlashCmd,
+  WireEvent, SlashCmd, CheckpointMeta,
 } from "./types";
 
 // ── Callback types ──
@@ -42,6 +42,9 @@ export interface AppBindings {
   Todos(): Promise<TodoItem[]>;
   Rewind(turn: number, scope: string): Promise<Response>;
   Fork(turn: number): Promise<Response>;
+  Checkpoints(): Promise<CheckpointMeta[]>;
+  SummarizeFrom(turn: number): Promise<Response>;
+  SummarizeUpTo(turn: number): Promise<Response>;
 
   /** Register an SSE event callback. Call once before boot. */
   onEvent(cb: EventCallback): void;
@@ -111,6 +114,15 @@ export const app: AppBindings = {
   },
   async Fork(turn: number): Promise<Response> {
     return post("/fork", { turn });
+  },
+  async Checkpoints(): Promise<CheckpointMeta[]> {
+    return getJSON<CheckpointMeta[]>("/checkpoints");
+  },
+  async SummarizeFrom(turn: number): Promise<Response> {
+    return post("/summarize", { turn, mode: "from" });
+  },
+  async SummarizeUpTo(turn: number): Promise<Response> {
+    return post("/summarize", { turn, mode: "upto" });
   },
 
   // ── SSE callbacks ──

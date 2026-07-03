@@ -8,14 +8,13 @@
  *   - Components receive state + actions as props from App.tsx
  */
 
-import { useEffect, useReducer, useRef, useState, useCallback } from "react";
+import { useEffect, useReducer, useState, useCallback } from "react";
 import { app } from "./bridge";
 import { reducer } from "./transcriptReducer";
 import { initialState } from "./transcriptTypes";
 import type { Action, Item } from "./transcriptTypes";
 import type { TodoItem, HistoryMessage } from "./types";
-import { parseTodos, renderTodoPanel, openRewindPicker } from "./ui";
-import { __ } from "./i18n";
+import { parseTodos } from "./ui";
 
 // ── Helpers ──
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
@@ -31,6 +30,7 @@ export interface ControllerState {
   balanceText: string;
   goalActive: boolean;
   retryStatus: { attempt: number; max: number } | null;
+  todos: TodoItem[];
   cumulativeTokens: number;
   cumulativeCost: number;
   cumulativeCacheHit: number;
@@ -43,6 +43,9 @@ export interface Controller {
   cancel: () => Promise<void>;
   newSession: () => Promise<void>;
   openRewind: () => void;
+  rewindOpen: boolean;
+  closeRewind: () => void;
+  dismissTodos: () => void;
   dispatch: (action: any) => void;
 }
 
@@ -63,9 +66,12 @@ export function useController(): Controller {
   const [cumulativeCacheHit, setCumulativeCacheHit] = useState(0);
   const [cumulativeCacheMiss, setCumulativeCacheMiss] = useState(0);
 
-  // ── Todos (vanilla DOM, refs instead of React state) ──
-  const todosStateRef = useRef<TodoItem[]>([]);
-  const todosDismissedRef = useRef(false);
+  // ── Todos (React state) ──
+  const [todos, setTodos] = useState<TodoItem[]>([]);
+  const [todosDismissed, setTodosDismissed] = useState(false);
+
+  // ── Rewind modal state ──
+  const [rewindOpen, setRewindOpen] = useState(false);
 
   // ── Helpers (memoized) ──
   const refreshStatus = useCallback(async () => {
@@ -78,10 +84,7 @@ export function useController(): Controller {
 
   const fetchTodos = useCallback(() => {
     app.Todos().then(ts => {
-      if (Array.isArray(ts)) {
-        todosStateRef.current = ts;
-        renderTodoPanel(ts, todosDismissedRef.current);
-      }
+      if (Array.isArray(ts)) setTodos(ts);
     }).catch(() => {});
   }, []);
 
@@ -104,16 +107,13 @@ export function useController(): Controller {
           setRunning(true);
           setTurnStartAt(Date.now());
           setTurnTokens(0);
-          todosDismissedRef.current = false;
+          setTodosDismissed(false);
           break;
         case "tool_result":
           if (e.tool && e.tool.name === "todo_write" && !e.tool.parentId && !e.tool.err) {
             try {
               const ts = parseTodos(e.tool.args);
-              if (ts.length) {
-                todosStateRef.current = ts;
-                renderTodoPanel(ts, todosDismissedRef.current);
-              }
+              if (ts.length) setTodos(ts);
             } catch { /* ignore */ }
           }
           break;
@@ -176,8 +176,8 @@ export function useController(): Controller {
 
   const newSession = useCallback(async () => {
     dispatch({ type: "clear" } as any);
-    todosStateRef.current = [];
-    todosDismissedRef.current = false;
+    setTodos([]);
+    setTodosDismissed(false);
     // Fetch new history after short delay (matches original 300ms)
     await sleep(300);
     try {
@@ -188,7 +188,11 @@ export function useController(): Controller {
   }, [fetchTodos]);
 
   const openRewind = useCallback(() => {
-    openRewindPicker(__);
+    setRewindOpen(true);
+  }, []);
+
+  const closeRewind = useCallback(() => {
+    setRewindOpen(false);
   }, []);
 
   // ── Expose cumulative stats to vanilla code ──
@@ -210,6 +214,7 @@ export function useController(): Controller {
       balanceText,
       goalActive,
       retryStatus,
+      todos,
       cumulativeTokens,
       cumulativeCost,
       cumulativeCacheHit,
@@ -220,5 +225,8 @@ export function useController(): Controller {
     cancel,
     newSession,
     openRewind,
+    dismissTodos: () => setTodosDismissed(true),
+    rewindOpen,
+    closeRewind,
   };
 }

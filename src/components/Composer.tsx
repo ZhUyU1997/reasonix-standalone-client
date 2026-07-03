@@ -37,9 +37,10 @@ interface ComposerProps {
   onStop: () => void;
   goalActive: boolean;
   goalText: string;
+  onOpenRewind?: () => void;
 }
 
-export function Composer({ running, onSend, onStop, goalActive, goalText }: ComposerProps) {
+export function Composer({ running, onSend, onStop, goalActive, goalText, onOpenRewind }: ComposerProps) {
   const [text, setText] = useState("");
   const [slashOpen, setSlashOpen] = useState(false);
   const [slashIndex, setSlashIndex] = useState(0);
@@ -140,9 +141,8 @@ export function Composer({ running, onSend, onStop, goalActive, goalText }: Comp
       if (e.key === "Escape") {
         if (running) { e.preventDefault(); onStop(); return; }
         if (text === "") {
-          // rewind — triggers escTimer equivalent
-          const ev = new CustomEvent("__rewind-esc");
-          window.dispatchEvent(ev);
+          // rewind — call the controller action
+          if (onOpenRewind) onOpenRewind();
         }
       }
     };
