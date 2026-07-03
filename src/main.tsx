@@ -124,18 +124,17 @@ function fetchTodos(): void {
     .then(ts => { if (Array.isArray(ts)) { todosState = ts; renderTodoPanel(todosState, todosDismissed); } })
     .catch(() => {});
 }
-const todosHead = document.getElementById("todos-head") as HTMLElement | null;
-if (todosHead) {
-  todosHead.addEventListener("click", (e: MouseEvent) => {
-    if ((e.target as HTMLElement).closest(".todos__dismiss")) {
-      todosDismissed = true;
-      renderTodoPanel(todosState, todosDismissed);
-      return;
-    }
-    const panel = document.getElementById("todo-panel") as HTMLElement | null;
-    if (panel) panel.classList.toggle("todos--collapsed");
-  });
-}
+document.addEventListener("click", (e: Event) => {
+  const head = (e.target as HTMLElement).closest("#todos-head") as HTMLElement | null;
+  if (!head) return;
+  if ((e.target as HTMLElement).closest(".todos__dismiss")) {
+    todosDismissed = true;
+    renderTodoPanel(todosState, todosDismissed);
+    return;
+  }
+  const panel = document.getElementById("todo-panel") as HTMLElement | null;
+  if (panel) panel.classList.toggle("todos--collapsed");
+});
 
 // ── rewind keyboard nav ──
 setupRewindKeyboardNav(__);
