@@ -18,7 +18,7 @@ const zh: Record<DictKey, string> = {
   cost: "费用",
   balance: "余额",
   ready: "就绪",
-  thinking: "思考中...",
+  thinking: "思考过程",
   retrying_status: "正在重试 ({attempt}/{max})...",
   stats: "统计",
   statistics: "统计",

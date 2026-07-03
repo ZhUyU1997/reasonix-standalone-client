@@ -18,7 +18,7 @@ export const en = {
   cost: "Cost",
   balance: "Balance",
   ready: "Ready",
-  thinking: "Thinking...",
+  thinking: "thinking",
   retrying_status: "Retrying ({attempt}/{max})...",
   stats: "Stats",
   statistics: "Statistics",
