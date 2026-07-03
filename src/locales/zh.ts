@@ -100,6 +100,7 @@ const zh: Record<DictKey, string> = {
   rewind_title: "回退 — 选择轮次",
   action_title: "第 #{turn} 轮 — 选择操作",
   files: "个文件",
+  done: "完成",
 };
 
 export default zh;

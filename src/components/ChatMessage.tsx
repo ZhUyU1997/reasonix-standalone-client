@@ -42,7 +42,7 @@ export function ChatMessage({ item, live }: Props) {
           >
             <span className={"reasoning__chevron" + (showReasoning ? " reasoning__chevron--open" : "")}>&#9654;</span>
             {" "}{__("thinking")}
-            <span className="reasoning__meta">{isStreaming && !reasoningComplete ? "…" : "✓"}</span>
+            <span className="reasoning__meta">{isStreaming && !reasoningComplete ? __("thinking") + "…" : __("done")}</span>
           </button>
           {showReasoning && (
             <div className="reasoning__body">{reasoning}</div>
