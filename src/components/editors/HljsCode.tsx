@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react";
 import type { CodeViewerProps } from "../CodeViewer";
+import { CopyButton } from "../CopyButton";
 
 const LANG_MAP: Record<string, string> = {
   js: "javascript", ts: "typescript", py: "python", rb: "ruby",
@@ -33,12 +34,15 @@ export default function HljsCode({ value, language }: CodeViewerProps) {
   }, [value, language]);
 
   return (
-    <pre className="code hljs" data-lang={language || undefined}>
-      {html ? (
-        <code dangerouslySetInnerHTML={{ __html: html }} />
-      ) : (
-        <code>{value}</code>
-      )}
-    </pre>
+    <div className="code-block__wrap">
+      <pre className="code hljs" data-lang={language || undefined}>
+        {html ? (
+          <code dangerouslySetInnerHTML={{ __html: html }} />
+        ) : (
+          <code>{value}</code>
+        )}
+      </pre>
+      <CopyButton text={value} />
+    </div>
   );
 }
