@@ -67,14 +67,48 @@ export function ToolCard({ item }: Props) {
 function renderBody(item: ToolItem, dvDiff: string | undefined) {
   const t = item.tool;
   if (dvDiff) {
-    const lang = t.name === "edit_file" ? detectLang(t.args || "") : "";
+    const lang = t.name === "edit_file" || t.name === "write_file" || t.name === "multi_edit" ? detectLang(t.args || "") : "";
     return (
       <div className="card-body" style={{ padding: 0, background: "none", maxHeight: "none" }}>
         <DiffView diff={dvDiff} language={lang} />
       </div>
     );
   }
+  // Fallback: compute diff from args (write_file: empty→content, edit_file: old→new)
+  if (t.name === "edit_file" || t.name === "multi_edit" || t.name === "write_file") {
+    const diffs = diffsFromArgs(t.name, t.args || "");
+    if (diffs.length) {
+      return (
+        <div className="card-body" style={{ padding: 0, background: "none", maxHeight: "none" }}>
+          {diffs.map((d, i) => (
+            <DiffView key={i} original={d.original} modified={d.modified} language={d.lang} />
+          ))}
+        </div>
+      );
+    }
+  }
   return <div className="card-body">{item.outputText}</div>;
+}
+
+function diffsFromArgs(name: string, args: string): { original: string; modified: string; lang: string }[] {
+  try {
+    const a = JSON.parse(args);
+    const lang = detectLang(args);
+    if (name === "write_file" && a.content != null) {
+      return [{ original: "", modified: a.content, lang }];
+    }
+    if (name === "edit_file" && a.old_string != null && a.new_string != null) {
+      return [{ original: a.old_string, modified: a.new_string, lang }];
+    }
+    if (name === "multi_edit" && Array.isArray(a.edits)) {
+      return a.edits.map((e: any) => ({
+        original: e.old_string || "",
+        modified: e.new_string || "",
+        lang,
+      }));
+    }
+  } catch {}
+  return [];
 }
 
 function trunc(s: string, n: number): string {

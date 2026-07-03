@@ -111,7 +111,7 @@ export function reducer(state: TranscriptState, action: Action): TranscriptState
             for (let i = s.items.length - 1; i >= 0; i--) {
               const item = s.items[i];
               if (item?.kind === "tool" && (t.id !== "" ? item.tool.id === t.id : item.tool.name === t.name)) {
-                s.items[i] = { ...item, tool: t, status: t.err ? "error" : "done", outputText: t.output || "" };
+                s.items[i] = { ...item, tool: { ...t, diff: t.diff || item.tool.diff }, status: t.err ? "error" : "done", outputText: t.output || "" };
                 break;
               }
             }
