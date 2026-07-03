@@ -43,15 +43,14 @@
 ### 快速开始
 
 ```bash
-# 1. 在 WSL 中启动 reasonix serve（默认端口 8787）
-cd /path/to/DeepSeek-Reasonix
-go run . serve --dir /path/to/project
+# 1. 确保已安装 reasonix 并启动了 serve（默认端口 8787）
+reasonix serve
 
-# 2. 在同一个 WSL 终端中启动开发服务器
+# 2. 在另一个终端中启动独立客户端开发服务器
 cd reasonix-standalone-client
 pnpm dev
 
-# 3. 在 Windows 浏览器中打开 http://localhost:5173
+# 3. 在浏览器中打开 http://localhost:5173
 ```
 
 Vite 开发服务器会自动将所有 API 调用（`/events`、`/submit`、`/history` 等）代理到 `reasonix serve` 后端——无需配置 CORS。

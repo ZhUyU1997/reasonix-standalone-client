@@ -43,15 +43,14 @@ If you're running Reasonix inside WSL (or any remote Linux host) and don't have 
 ### Quick start
 
 ```bash
-# 1. In WSL, start reasonix serve (default port 8787)
-cd /path/to/DeepSeek-Reasonix
-go run . serve --dir /path/to/project
+# 1. Make sure reasonix is installed and serve is running (default port 8787)
+reasonix serve
 
-# 2. In the same WSL terminal, start the dev server
+# 2. In another terminal, start the standalone client dev server
 cd reasonix-standalone-client
 pnpm dev
 
-# 3. Open http://localhost:5173 in your Windows browser
+# 3. Open http://localhost:5173 in your browser
 ```
 
 The Vite dev server proxies all API calls (`/events`, `/submit`, `/history`, etc.) to the `reasonix serve` backend automatically — no CORS configuration needed.
