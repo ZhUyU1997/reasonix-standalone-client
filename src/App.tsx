@@ -14,6 +14,7 @@ import { TodoPanel } from "./components/TodoPanel";
 import { RewindModal } from "./components/RewindModal";
 import { useLayoutStore } from "./lib/store/layout";
 import { app } from "./lib/bridge";
+import { LocaleProvider } from "./lib/i18n";
 import { useController } from "./lib/useController";
 import { fmtElapsed, fmtTok } from "./lib/ui";
 
@@ -28,6 +29,7 @@ export default function App() {
     : "";
 
   return (
+    <LocaleProvider>
     <>
     <div className="app">
       <aside id="sidebar" className={"sidebar" + (sidebarOpen ? " sidebar--open" : "")} style={{ gridRow: "1/3" }}>
@@ -77,5 +79,6 @@ export default function App() {
     </div>
     {rewindOpen && <RewindModal onClose={closeRewind} />}
     </>
+    </LocaleProvider>
   );
 }
