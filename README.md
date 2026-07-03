@@ -12,29 +12,22 @@ A standalone web client for [Reasonix](https://github.com/ZhUyU1997/DeepSeek-Rea
 
 ## Feature comparison
 
-| Feature | `serve/index.html` | standalone-client |
+| What you see / do | `serve/index.html` | standalone-client |
 |---|---|---|
-| Stack | Vanilla JS, inline | Vite + React 18 + TypeScript |
-| Build | None (served as-is) | Bundled + minified |
-| Markdown rendering | None (raw text) | `react-markdown` + `remark-gfm` |
-| Code highlighting | None | `highlight.js` with 12+ languages |
-| Diff viewer | None | Side-by-side diff with highlight (edit_file/multi_edit) |
-| Copy button | None | Clipboard API + fallback on code blocks |
-| Overlays (approval/ask) | DOM append | React components (ApprovalCard, AskCard) |
-| Session management | Basic list | Async session list with status polling |
-| i18n | Inline `__()` | Dedicated locale files (`en.ts`, `zh.ts`) + `LocaleProvider` |
-| Compaction UI | Collapsible `.compaction` head + body | Same structure, React-managed |
-| Transcript | DOM-managed, full re-render | Virtualized reducer (`useReducer`) |
-| Hot reload | None | Vite HMR during development |
-| File count | 1 file | ~25 files (components, lib, types) |
+| Message rendering | Plain text with line breaks | Markdown (bold, lists, tables, links) |
+| Code in messages | Plain monospace text | Syntax-highlighted code with language label |
+| Code diffs (edit_file) | Raw output text | Side-by-side diff view with highlighting |
+| Copying code | Manual select + copy | One-click copy button on every code block |
+| Approval / Ask dialogs | Plain text prompts | Styled modal cards with keyboard shortcuts |
+| Session switching | Reload page | Instant switch from sidebar list |
+| Language | English only | English + Chinese (auto-detected) |
+| Compaction record | Collapsible head + summary | Same behavior, smooth interaction |
+| Transcript scrolling | Full re-render on each event | Incremental updates, stays responsive |
+| Development feedback | Edit → refresh browser | Hot reload — changes appear instantly |
 
-### Preserved behavior
+### What stays the same
 
-Both clients:
-- Connect to the same SSE (`/events`) and HTTP API
-- Use the same CSS variables and color scheme
-- Support auto/plan/yolo modes, goal mode, and tool approval
-- Handle compaction, rewind, session switching
+Both clients connect to the same backend, share the same CSS color scheme, and support all the same modes (auto/plan/yolo, goal, tool approval, compaction, rewind, session management).
 
 ## WSL / remote workflow
 
@@ -68,7 +61,7 @@ npm build          # produces dist/
 ## Development
 
 ```bash
-npm dev          # Vite dev server with HMR (proxy configured)
+npm run dev          # Vite dev server with HMR (proxy configured)
 npm build        # TypeScript check + production build
 ```
 

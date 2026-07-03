@@ -12,29 +12,22 @@
 
 ## 功能对比
 
-| 功能 | `serve/index.html` | standalone-client |
+| 使用体验 | `serve/index.html` | standalone-client |
 |---|---|---|
-| 技术栈 | Vanilla JS 内联 | Vite + React 18 + TypeScript |
-| 构建 | 无（直接输出） | 打包 + 压缩 |
-| Markdown 渲染 | 无（纯文本） | `react-markdown` + `remark-gfm` |
-| 代码高亮 | 无 | `highlight.js`（12+ 种语言） |
-| Diff 视图 | 无 | 并排 diff + 高亮（edit_file/multi_edit） |
-| 复制按钮 | 无 | Clipboard API + 降级（代码块上） |
-| 审批/问答弹窗 | DOM append | React 组件（ApprovalCard, AskCard） |
-| 会话管理 | 基础列表 | 异步列表 + 状态轮询 |
-| 国际化 | 内联 `__()` | 独立语言文件（`en.ts`, `zh.ts`）+ `LocaleProvider` |
-| 压缩记录 | 可折叠 `.compaction` 头部 + 正文 | 相同结构，React 管理 |
-| 会话记录 | DOM 操作，全量重渲染 | Reducer 驱动（`useReducer`） |
-| 热更新 | 无 | Vite HMR（开发环境） |
-| 文件数 | 1 个文件 | ~25 个文件（组件、库、类型） |
+| 消息渲染 | 纯文本 + 换行 | Markdown（加粗、列表、表格、链接） |
+| 代码展示 | 纯等宽文本 | 语法高亮 + 语言标签 |
+| 代码差异（edit_file） | 原始输出文本 | 并排 diff 视图 + 高亮 |
+| 复制代码 | 手动选中 + 复制 | 一键复制按钮（每个代码块） |
+| 审批/问答弹窗 | 纯文本提示 | 样式化模态框 + 键盘快捷键 |
+| 切换会话 | 刷新页面 | 侧边栏列表一键切换 |
+| 语言 | 仅英文 | 英文 + 中文（自动检测） |
+| 压缩记录 | 可折叠头部 + 摘要 | 相同行为，交互更流畅 |
+| 会话记录滚动 | 每次事件全量重渲染 | 增量更新，响应迅速 |
+| 开发反馈 | 修改 → 刷新浏览器 | 热更新 — 修改即时生效 |
 
 ### 保持一致的行为
 
-两者均：
-- 连接同一套 SSE（`/events`）和 HTTP API
-- 使用相同的 CSS 变量和颜色方案
-- 支持 auto/plan/yolo 模式、goal 模式和工具审批
-- 处理压缩、回退、会话切换
+两者连接同一后端、共享相同 CSS 配色方案、支持所有相同模式（auto/plan/yolo、goal、工具审批、压缩、回退、会话管理）。
 
 ## WSL / 远程工作流
 
@@ -48,7 +41,7 @@ reasonix serve
 
 # 2. 在另一个终端中启动独立客户端开发服务器
 cd reasonix-standalone-client
-npm dev
+npm run dev
 
 # 3. 在浏览器中打开 http://localhost:5173
 ```
@@ -68,7 +61,7 @@ npm build          # 生成 dist/
 ## 开发
 
 ```bash
-npm dev          # Vite 开发服务器（HMR，已配置代理）
+npm run dev          # Vite 开发服务器（HMR，已配置代理）
 npm build        # TypeScript 检查 + 生产构建
 ```
 
