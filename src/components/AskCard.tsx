@@ -3,9 +3,9 @@
  * Matches original: each question rendered with own submit button.
  */
 import { useEffect, useState } from "react";
-import { __ } from "./i18n";
-import { post } from "./api";
-import type { WireAsk } from "./types";
+import { __ } from "../lib/i18n";
+import { post } from "../lib/api";
+import type { WireAsk } from "../lib/types";
 
 interface Props {
   ask: WireAsk;

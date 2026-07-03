@@ -3,15 +3,15 @@
  * Renders welcome + message items, handles auto-scroll during streaming.
  */
 import { useEffect, useReducer, useRef, useCallback } from "react";
-import { __ } from "./i18n";
-import { reducer } from "./transcriptReducer";
-import type { TranscriptState, Action, Item, LiveStream } from "./transcriptTypes";
-import { initialState } from "./transcriptTypes";
+import { __ } from "../lib/i18n";
+import { reducer } from "../lib/transcriptReducer";
+import type { TranscriptState, Action, Item, LiveStream } from "../lib/transcriptTypes";
+import { initialState } from "../lib/transcriptTypes";
 import { ChatMessage } from "./ChatMessage";
 import { ToolCard } from "./ToolCard";
 import { ApprovalCard } from "./ApprovalCard";
 import { AskCard } from "./AskCard";
-import { fmtMoney, fmtTok } from "./ui";
+import { fmtMoney, fmtTok } from "../lib/ui";
 
 // expose a dispatch function so main.ts SSE handler can send events
 let _dispatch: ((a: Action) => void) | null = null;

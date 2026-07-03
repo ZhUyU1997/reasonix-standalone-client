@@ -2,8 +2,8 @@
  * ModeBar.tsx — mode selection buttons (Auto / Plan / Yolo / Goal) + goal chip bar.
  */
 import { useEffect, useState } from "react";
-import { __ } from "./i18n";
-import { post } from "./api";
+import { __ } from "../lib/i18n";
+import { post } from "../lib/api";
 
 interface ModeBarProps {
   onModeChange?: () => void;

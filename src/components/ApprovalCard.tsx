@@ -2,10 +2,10 @@
  * ApprovalCard.tsx — renders an approval request card.
  */
 import { useEffect } from "react";
-import { __ } from "./i18n";
-import { post } from "./api";
-import type { WireApproval } from "./types";
-import { bashCommandPrefix, approvalSessionRule, approvalPersistentRule } from "./ui";
+import { __ } from "../lib/i18n";
+import { post } from "../lib/api";
+import type { WireApproval } from "../lib/types";
+import { bashCommandPrefix, approvalSessionRule, approvalPersistentRule } from "../lib/ui";
 
 interface Props {
   approval: WireApproval;

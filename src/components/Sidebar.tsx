@@ -3,9 +3,9 @@
  * Self-contained: polls /sessions and /status internally.
  */
 import { useEffect, useState, useCallback } from "react";
-import { __ } from "./i18n";
-import { post, getJSON } from "./api";
-import { escHtml, escAttr, fmtTok, fmtMoney } from "./ui";
+import { __ } from "../lib/i18n";
+import { post, getJSON } from "../lib/api";
+import { escHtml, escAttr, fmtTok, fmtMoney } from "../lib/ui";
 
 interface SessionMeta {
   name: string;

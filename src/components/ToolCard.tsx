@@ -6,7 +6,7 @@
  * - complete: data-tone=success/danger, body shows output
  */
 import { useEffect, useState } from "react";
-import type { ToolItem } from "./transcriptTypes";
+import type { ToolItem } from "../lib/transcriptTypes";
 
 interface Props {
   item: ToolItem;

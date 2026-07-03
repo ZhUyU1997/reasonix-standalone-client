@@ -2,7 +2,7 @@
  * StatusBar.tsx — presentational React component for the footer status bar.
  * Receives all state as props from main.ts (no internal polling).
  */
-import { __ } from "./i18n";
+import { __ } from "../lib/i18n";
 
 interface StatusBarProps {
   running: boolean;

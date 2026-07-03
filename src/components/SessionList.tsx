@@ -3,9 +3,9 @@
  * handles resume/delete. Exposes window.__reloadSessions for vanilla code to trigger refresh.
  */
 import { useEffect, useState, useCallback } from "react";
-import { __ } from "./i18n";
-import { post, getJSON } from "./api";
-import type { SessionMeta } from "./types";
+import { __ } from "../lib/i18n";
+import { post, getJSON } from "../lib/api";
+import type { SessionMeta } from "../lib/types";
 
 interface SessionListProps {
   onResume?: () => void;

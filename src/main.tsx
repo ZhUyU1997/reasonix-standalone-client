@@ -2,22 +2,22 @@
  * main.ts — entry point. Imports api and ui modules, wires up the UI.
  */
 
-import { __ } from "./i18n";
-import { post, getJSON, connectSSE } from "./api";
+import { __ } from "./lib/i18n";
+import { post, getJSON, connectSSE } from "./lib/api";
 import { createElement } from "react";
 import { createRoot } from "react-dom/client";
-import { StatusBar } from "./StatusBar";
-import { ModeBar } from "./ModeBar";
-import { Sidebar } from "./Sidebar";
-import { Composer } from "./Composer";
-import { Transcript, getDispatch } from "./Transcript";
+import { StatusBar } from "./components/StatusBar";
+import { ModeBar } from "./components/ModeBar";
+import { Sidebar } from "./components/Sidebar";
+import { Composer } from "./components/Composer";
+import { Transcript, getDispatch } from "./components/Transcript";
 import {
   fmtTok, fmtElapsed,
   parseTodos, renderTodoPanel,
   openRewindPicker,
   setupRewindKeyboardNav,
-} from "./ui";
-import type { StatusResponse, HistoryMessage, TodoItem } from "./types";
+} from "./lib/ui";
+import type { StatusResponse, HistoryMessage, TodoItem } from "./lib/types";
 
 // ── DOM refs ──
 // ── state ──

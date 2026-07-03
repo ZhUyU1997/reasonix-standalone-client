@@ -3,8 +3,8 @@
  * Matches original internal/serve/index.html DOM structure exactly.
  */
 import { useState } from "react";
-import { __ } from "./i18n";
-import type { UserItem, AssistantItem, LiveStream } from "./transcriptTypes";
+import { __ } from "../lib/i18n";
+import type { UserItem, AssistantItem, LiveStream } from "../lib/transcriptTypes";
 
 interface Props {
   item: UserItem | AssistantItem;

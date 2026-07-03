@@ -2,8 +2,8 @@
  * Composer.tsx — input textarea + send/stop buttons + slash menu.
  */
 import { useEffect, useRef, useState, useCallback } from "react";
-import { __ } from "./i18n";
-import { post } from "./api";
+import { __ } from "../lib/i18n";
+import { post } from "../lib/api";
 import { getDispatch } from "./Transcript";
 
 interface SlashCmd {
