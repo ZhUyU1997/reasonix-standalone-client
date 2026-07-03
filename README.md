@@ -44,34 +44,6 @@ The Vite dev server proxies all API calls (`/events`, `/submit`, `/history`, etc
 
 ```bash
 npm build          # produces dist/
-```
-
 > **Note:** The production build serves static files only. API routes (`/events`, `/submit`, `/history`, etc.) require a reverse proxy to `reasonix serve`. For local development, use `npm run dev` (Vite's dev proxy handles this automatically).
 
-## Development
 
-```bash
-npm run dev          # Vite dev server with HMR (proxy configured)
-npm build        # TypeScript check + production build
-```
-
-## Project structure
-
-```
-src/
-  App.tsx              — Root component, layout, status bar integration
-  main.tsx             — Entry point, mounts React root
-  components/          — React UI components (StatusBar, Composer, Sidebar, Transcript, etc.)
-  lib/
-    bridge.ts          — AppBindings implementation (HTTP + SSE)
-    useController.ts   — State hook: reducer + SSE + polling
-    transcriptReducer.ts  — Reducer for transcript items
-    transcriptTypes.ts — Item types & actions
-    types.ts           — Shared WireEvent types
-    api.ts             — HTTP/SSE helpers
-    ui.ts              — Utility functions (escaping, formatting)
-    i18n.tsx           — Locale provider + useT() hook
-    diff.ts            — Line diff + unified diff parser
-    highlight.ts       — highlight.js wrapper (12 languages)
-  locales/             — English + Chinese translations
-```

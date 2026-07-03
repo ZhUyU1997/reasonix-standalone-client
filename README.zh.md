@@ -44,34 +44,6 @@ Vite 开发服务器会自动将所有 API 调用（`/events`、`/submit`、`/hi
 
 ```bash
 npm build          # 生成 dist/
-```
-
 > **注意：** 生产构建仅提供静态文件。API 路由（`/events`、`/submit`、`/history` 等）需要反向代理到 `reasonix serve` 后端。本地开发请使用 `npm run dev`（Vite 开发代理会自动处理）。
 
-## 开发
 
-```bash
-npm run dev          # Vite 开发服务器（HMR，已配置代理）
-npm build        # TypeScript 检查 + 生产构建
-```
-
-## 项目结构
-
-```
-src/
-  App.tsx              — 根组件、布局、状态栏集成
-  main.tsx             — 入口、挂载 React 根节点
-  components/          — React UI 组件（StatusBar、Composer、Sidebar、Transcript 等）
-  lib/
-    bridge.ts          — AppBindings 实现（HTTP + SSE）
-    useController.ts   — 状态 Hook：reducer + SSE + 轮询
-    transcriptReducer.ts  — 会话记录 reducer
-    transcriptTypes.ts — 记录项类型和动作
-    types.ts           — 共享 WireEvent 类型
-    api.ts             — HTTP/SSE 辅助函数
-    ui.ts              — 工具函数（转义、格式化）
-    i18n.tsx           — 语言提供者 + useT() Hook
-    diff.ts            — 行 diff + 统一 diff 解析器
-    highlight.ts       — highlight.js 封装（12 种语言）
-  locales/             — 英文 + 中文翻译
-```
