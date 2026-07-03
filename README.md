@@ -10,6 +10,15 @@ A standalone web client for [Reasonix](https://github.com/ZhUyU1997/DeepSeek-Rea
 - Works in any browser — perfect for WSL, remote servers, or headless environments
 - Shares the same SSE/HTTP backend as the original `serve` client
 
+## Feature comparison
+
+| What you see / do | `serve/index.html` | standalone-client |
+|---|---|---|
+| Message rendering | Plain text with line breaks | Markdown (bold, lists, tables, links) |
+| Code in messages | Plain monospace text | Syntax-highlighted code with language label |
+| Code diffs (edit_file) | Raw output text | Side-by-side diff view with highlighting |
+| Copying code | Manual select + copy | One-click copy button on every code block |
+
 ## WSL / remote workflow
 
 If you're running Reasonix inside WSL (or any remote Linux host) and don't have a desktop environment, this client gives you a desktop-like experience without needing the Wails binary.
