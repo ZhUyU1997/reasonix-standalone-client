@@ -100,5 +100,6 @@ export const en = {
   rewind_title: "Rewind — Select Turn",
   action_title: "Turn #{turn} — Select Action",
   files: "files",
-  done: "done",
+  thinking_running: "thinking…",
+  thinking_done: "done",
 };
