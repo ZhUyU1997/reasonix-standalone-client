@@ -18,7 +18,7 @@ export const en = {
   cost: "Cost",
   balance: "Balance",
   ready: "Ready",
-  thinking: "thinking",
+  thinking: "Thinking...",
   retrying_status: "Retrying ({attempt}/{max})...",
   stats: "Stats",
   statistics: "Statistics",
@@ -102,4 +102,5 @@ export const en = {
   files: "files",
   thinking_running: "thinking…",
   thinking_done: "done",
+  thinking_label: "thinking",
 };

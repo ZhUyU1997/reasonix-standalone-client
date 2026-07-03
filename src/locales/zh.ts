@@ -18,7 +18,7 @@ const zh: Record<DictKey, string> = {
   cost: "费用",
   balance: "余额",
   ready: "就绪",
-  thinking: "思考过程",
+  thinking: "思考中...",
   retrying_status: "正在重试 ({attempt}/{max})...",
   stats: "统计",
   statistics: "统计",
@@ -102,6 +102,7 @@ const zh: Record<DictKey, string> = {
   files: "个文件",
   thinking_running: "思考中…",
   thinking_done: "已完成",
+  thinking_label: "思考过程",
 };
 
 export default zh;

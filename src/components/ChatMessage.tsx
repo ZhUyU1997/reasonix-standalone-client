@@ -42,7 +42,7 @@ export function ChatMessage({ item, live }: Props) {
             <span className={"reasoning__chevron" + (showReasoning ? " reasoning__chevron--open" : "")}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 6 15 12 9 18"/></svg>
             </span>
-            {" "}{__("thinking")}
+            {" "}{__("thinking_label")}
             <span className="reasoning__meta">{isStreaming && !reasoningComplete ? __("thinking_running") : __("thinking_done")}</span>
           </button>
           {showReasoning && (
