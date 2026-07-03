@@ -48,7 +48,7 @@ reasonix serve
 
 # 2. 在另一个终端中启动独立客户端开发服务器
 cd reasonix-standalone-client
-pnpm dev
+npm dev
 
 # 3. 在浏览器中打开 http://localhost:5173
 ```
@@ -58,15 +58,15 @@ Vite 开发服务器会自动将所有 API 调用（`/events`、`/submit`、`/hi
 ### 生产构建
 
 ```bash
-pnpm build
-pnpm vite preview   # 运行在 http://localhost:4173
+npm build
+npm vite preview   # 运行在 http://localhost:4173
 
 ## 开发
 
 ```bash
-pnpm dev          # Vite 开发服务器（HMR）
-pnpm build        # TypeScript 检查 + 生产构建
-pnpm vite preview # 本地预览生产构建
+npm dev          # Vite 开发服务器（HMR）
+npm build        # TypeScript 检查 + 生产构建
+npm vite preview # 本地预览生产构建
 ```
 
 ## 项目结构

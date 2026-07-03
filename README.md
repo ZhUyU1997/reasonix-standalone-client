@@ -48,7 +48,7 @@ reasonix serve
 
 # 2. In another terminal, start the standalone client dev server
 cd reasonix-standalone-client
-pnpm dev
+npm run dev
 
 # 3. Open http://localhost:5173 in your browser
 ```
@@ -58,15 +58,15 @@ The Vite dev server proxies all API calls (`/events`, `/submit`, `/history`, etc
 ### Production build
 
 ```bash
-pnpm build
-pnpm vite preview   # serves on http://localhost:4173
+npm build
+npm vite preview   # serves on http://localhost:4173
 
 ## Development
 
 ```bash
-pnpm dev          # Vite dev server with HMR
-pnpm build        # TypeScript check + production build
-pnpm vite preview # Preview production build locally
+npm dev          # Vite dev server with HMR
+npm build        # TypeScript check + production build
+npm vite preview # Preview production build locally
 ```
 
 ## Project structure
