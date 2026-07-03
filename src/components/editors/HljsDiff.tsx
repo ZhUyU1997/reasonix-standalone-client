@@ -3,7 +3,7 @@
  * Matches desktop/frontend/src/components/editors/HljsDiff.tsx.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import type { DiffProps } from "../DiffView";
 import { diffLines, diffRowsFromUnifiedDiff } from "../../lib/diff";
@@ -17,7 +17,10 @@ function lineNo(n?: number): string {
 }
 
 export default function HljsDiff({ original = "", modified = "", diff = "", language, maxHeight }: DiffProps) {
-  const rows = diff ? diffRowsFromUnifiedDiff(diff) : diffLines(original, modified);
+  const rows = useMemo(
+    () => diff ? diffRowsFromUnifiedDiff(diff) : diffLines(original, modified),
+    [original, modified, diff],
+  );
   const scrollRef = useRef<HTMLDivElement>(null);
   const [highlighted, setHighlighted] = useState<string[]>([]);
 
