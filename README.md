@@ -25,10 +25,6 @@ A standalone web client for [Reasonix](https://github.com/ZhUyU1997/DeepSeek-Rea
 | Transcript scrolling | Full re-render on each event | Incremental updates, stays responsive |
 | Development feedback | Edit → refresh browser | Hot reload — changes appear instantly |
 
-### What stays the same
-
-Both clients connect to the same backend, share the same CSS color scheme, and support all the same modes (auto/plan/yolo, goal, tool approval, compaction, rewind, session management).
-
 ## WSL / remote workflow
 
 If you're running Reasonix inside WSL (or any remote Linux host) and don't have a desktop environment, this client gives you a desktop-like experience without needing the Wails binary.
