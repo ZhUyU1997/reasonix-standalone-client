@@ -32,9 +32,13 @@ export default function HljsCode({ value, language }: CodeViewerProps) {
     highlightCode(value, language || "").then(setHtml);
   }, [value, language]);
 
-  return html ? (
-    <pre><code dangerouslySetInnerHTML={{ __html: html }} /></pre>
-  ) : (
-    <pre><code>{value}</code></pre>
+  return (
+    <pre className="code hljs" data-lang={language || undefined}>
+      {html ? (
+        <code dangerouslySetInnerHTML={{ __html: html }} />
+      ) : (
+        <code>{value}</code>
+      )}
+    </pre>
   );
 }

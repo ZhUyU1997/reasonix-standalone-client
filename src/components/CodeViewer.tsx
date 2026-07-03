@@ -18,9 +18,8 @@ const Impl = lazy(() => import("./editors/HljsCode"));
 
 export function CodeViewer(props: CodeViewerProps) {
   return (
-    <div className="code-block">
-      {props.language && <span className="code-block__lang">{props.language}</span>}
-      <Suspense fallback={<pre className="code--loading"><code>{props.value}</code></pre>}>
+    <div className="code-block__wrap">
+      <Suspense fallback={<pre className="code code--loading"><code>{props.value}</code></pre>}>
         <Impl {...props} />
       </Suspense>
     </div>
