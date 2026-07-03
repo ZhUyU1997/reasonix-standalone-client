@@ -53,7 +53,9 @@ npm dev
 # 3. 在浏览器中打开 http://localhost:5173
 ```
 
-Vite 开发服务器会自动将所有 API 调用（`/events`、`/submit`、`/history` 等）代理到 `reasonix serve` 后端——无需配置 CORS。
+Vite 开发服务器会自动将所有 API 调用（`/events`、`/submit`、`/history` 等）代理到 `reasonix serve` 后端。
+
+> **为什么需要代理？** `reasonix serve` 出于安全原因（无认证）默认禁用了 CORS。内置的 HTML 客户端通过同源访问（`/`），所以没问题。如果前端运行在不同端口，要么通过代理（Vite 开发服务器），要么手动添加 CORS 头。Vite 代理自动处理了这一切。
 
 ### 生产构建
 

@@ -53,7 +53,9 @@ npm run dev
 # 3. Open http://localhost:5173 in your browser
 ```
 
-The Vite dev server proxies all API calls (`/events`, `/submit`, `/history`, etc.) to the `reasonix serve` backend automatically — no CORS configuration needed.
+The Vite dev server proxies all API calls (`/events`, `/submit`, `/history`, etc.) to the `reasonix serve` backend automatically.
+
+> **Why a proxy?** `reasonix serve` intentionally disables CORS for security (no auth). The built-in HTML client at `/` uses same-origin, so it works fine. A frontend on a different port has to either go through a proxy (Vite dev server) or add CORS headers. The Vite proxy handles this transparently.
 
 ### Production build
 
