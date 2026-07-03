@@ -5,6 +5,7 @@
 import { useState } from "react";
 import { __ } from "../lib/i18n";
 import type { UserItem, AssistantItem, LiveStream } from "../lib/transcriptTypes";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface Props {
   item: UserItem | AssistantItem;
@@ -45,9 +46,9 @@ export function ChatMessage({ item, live }: Props) {
         </div>
       )}
 
-      {/* message text — matches original: span.msg__text with textContent */}
+      {/* message text — rendered as markdown */}
       {text ? (
-        <span className="msg__text">{text}</span>
+        <div className="msg__text"><MarkdownRenderer text={text} /></div>
       ) : null}
 
       {/* cursor as sibling after msg__text during streaming — matches original (only after first text chunk) */}
