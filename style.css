@@ -422,3 +422,15 @@ code.hljs {
   /* purposely ignored */
   
 }
+/* ── diff ────────────────────────────────────────────────────────────────── */
+.diff{margin:4px 0;background:var(--bg-2);border:1px solid var(--border);border-radius:8px;font-family:var(--mono);font-size:12.5px;line-height:1.55;overflow:auto}
+.diff__table{display:block;min-width:max-content;width:100%}
+.diff__row{display:flex;background:var(--bg-2);box-sizing:border-box;min-width:100%;width:100%;white-space:pre}
+.diff__row--add{background:linear-gradient(var(--success-soft),var(--success-soft)),var(--bg-2)}
+.diff__row--del{background:linear-gradient(var(--danger-soft),var(--danger-soft)),var(--bg-2)}
+.diff__gutter{position:sticky;left:0;z-index:2;display:grid;grid-template-columns:4ch 4ch .7em;gap:6px;flex:0 0 auto;padding:0 8px 0 12px;background:inherit;box-shadow:1px 0 0 var(--border);user-select:none}
+.diff__line{color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
+.diff__sign{width:.7em;flex-shrink:0;color:var(--muted);user-select:none}
+.diff__row--add .diff__sign{color:var(--success)}
+.diff__row--del .diff__sign{color:var(--danger)}
+.diff__text{flex:1 0 auto;font-family:var(--mono);padding:0 12px 0 8px}
