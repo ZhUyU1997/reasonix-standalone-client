@@ -10,31 +10,7 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="app">
-  <aside id="sidebar" class="sidebar" style="grid-row:1/3"></aside>
-
-  <div id="transcript-root" class="transcript"></div>
-
-  <footer class="footer">
-    <div id="todo-panel" class="todos">
-      <div class="todos__head" id="todos-head">
-        <span class="todos__title" id="todos-title">To-dos</span>
-        <span class="todos__badge" id="todos-badge"></span>
-        <span class="todos__summary" id="todos-summary"></span>
-        <span class="todos__dismiss" id="todos-dismiss" title="Close" style="display:none">&times;</span>
-        <span class="todos__chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
-      </div>
-      <ul class="todos__list" id="todos-list"></ul>
-    </div>
-    <div class="toolbar">
-      <div id="modebar-root" style="display:inline-flex;align-items:center;gap:5px"></div>
-      <div id="statusbar-root" style="display:flex;flex:1;align-items:center;gap:5px"></div>
-    </div>
-    <div id="composer-root"></div>
-  </footer>
-</div>
-
-<!-- stats modal -->
+<div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@ import { useEffect, useState, useCallback } from "react";
 import { __ } from "../lib/i18n";
 import { post, getJSON } from "../lib/api";
 import { escHtml, escAttr, fmtTok, fmtMoney } from "../lib/ui";
+import { useApp } from "../lib/AppContext";
 
 interface SessionMeta {
   name: string;
@@ -29,17 +30,13 @@ interface StatusSnapshot {
   goalStatus?: string;
 }
 
-interface SidebarProps {
-  running: boolean;
-}
-
-export function Sidebar({ running }: SidebarProps) {
+export function Sidebar() {
   const [sessions, setSessions] = useState<SessionMeta[]>([]);
   const [status, setStatus] = useState<StatusSnapshot | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   // stats modal
   const [showStats, setShowStats] = useState(false);
-  const [connState, setConnState] = useState("connected");
+  const { running, connState, onNewSession, onOpenRewind } = useApp();
   const [statsData, setStatsData] = useState({ model: "-", count: 0, tokens: 0, cost: 0, currency: "", cacheHit: 0, cacheMiss: 0, used: 0, window: 0, balance: "-" });
 
   // ── fetch sessions ──
@@ -73,13 +70,6 @@ export function Sidebar({ running }: SidebarProps) {
     return () => window.removeEventListener("__refresh-sidebar", onRefresh);
   }, [fetchSessions, fetchStatus]);
 
-  // listen for connection state changes from main.ts
-  useEffect(() => {
-    const handler = (e: Event) => setConnState((e as CustomEvent).detail || "");
-    window.addEventListener("__conn-state", handler);
-    return () => window.removeEventListener("__conn-state", handler);
-  }, []);
-
   // sync sidebar--open class on the mount point (used for mobile transform)
   useEffect(() => {
     const el = document.getElementById("sidebar");
@@ -90,13 +80,13 @@ export function Sidebar({ running }: SidebarProps) {
   const handleNew = () => {
     if (running) return;
     post("/new").then(() => {
-      window.dispatchEvent(new CustomEvent("__new-session"));
+      onNewSession();
       fetchSessions();
     });
   };
 
   const handleCompact = () => { if (!running) post("/compact"); };
-  const handleRewind = () => { window.dispatchEvent(new CustomEvent("__open-rewind")); };
+  const handleRewind = () => { onOpenRewind(); };
   const handleTree = () => { post("/submit", { input: "/tree" }); };
   const handleStats = async () => {
     try {
@@ -121,7 +111,7 @@ export function Sidebar({ running }: SidebarProps) {
   const handleResume = (s: SessionMeta) => {
     if (running || s.current) return;
     post("/resume", { path: s.path }).then(() => {
-      window.dispatchEvent(new CustomEvent("__new-session"));
+      onNewSession();
       fetchSessions();
     });
   };
