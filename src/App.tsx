@@ -12,14 +12,13 @@ import { Transcript } from "./components/Transcript";
 import { ModeBar } from "./components/ModeBar";
 import { StatusBar } from "./components/StatusBar";
 import { Composer } from "./components/Composer";
-import { post, getJSON } from "./lib/api";
+import { app } from "./lib/bridge";
 import { getApp, subscribe, setApp } from "./lib/appState";
 import { AppContextProvider } from "./lib/AppContext";
 import { getDispatch } from "./components/Transcript";
 import { openRewindPicker } from "./lib/ui";
 import { __ } from "./lib/i18n";
 import { fmtElapsed, fmtTok } from "./lib/ui";
-import type { StatusResponse } from "./lib/types";
 
 export default function App() {
   const [s, setS] = useState(getApp());
@@ -103,10 +102,10 @@ export default function App() {
           <Composer
             running={s.running}
             onSend={(text: string) => {
-              post("/submit", { input: text }).then((r) => {
+              app.Submit(text).then((r) => {
                 if (r.ok && r.status === 204) {
                   window.dispatchEvent(new CustomEvent("__refresh-sidebar"));
-                  getJSON<StatusResponse>("/status").then(st => {
+                  app.Balance().then(st => {
                     setApp({
                       balanceText: st.balance ? "💰 " + (st.balance.display || "") : "",
                       goalActive: !!(st.goal && (st.goalStatus || "") === "running"),
@@ -115,7 +114,7 @@ export default function App() {
                 }
               });
             }}
-            onStop={() => post("/cancel")}
+            onStop={() => app.Cancel()}
             goalActive={false}
             goalText=""
           />

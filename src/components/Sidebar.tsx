@@ -4,17 +4,10 @@
  */
 import { useEffect, useState, useCallback } from "react";
 import { __ } from "../lib/i18n";
-import { post, getJSON } from "../lib/api";
+import { app } from "../lib/bridge";
 import { escHtml, escAttr, fmtTok, fmtMoney } from "../lib/ui";
+import type { SessionMeta } from "../lib/types";
 import { useApp } from "../lib/AppContext";
-
-interface SessionMeta {
-  name: string;
-  path: string;
-  current: boolean;
-  title?: string;
-  turns?: number;
-}
 
 interface StatusSnapshot {
   label: string;
@@ -42,7 +35,7 @@ export function Sidebar() {
   // ── fetch sessions ──
   const fetchSessions = useCallback(async () => {
     try {
-      const ss = await getJSON<SessionMeta[]>("/sessions");
+      const ss = await app.ListSessions();
       setSessions(ss || []);
     } catch {}
   }, []);
@@ -50,8 +43,8 @@ export function Sidebar() {
   // ── fetch status ──
   const fetchStatus = useCallback(async () => {
     try {
-      const s = await getJSON<StatusSnapshot>("/status");
-      setStatus(s);
+      const s = await app.Balance();
+      setStatus(s as any);
     } catch {}
   }, []);
 
@@ -79,18 +72,18 @@ export function Sidebar() {
   // ── nav handlers ──
   const handleNew = () => {
     if (running) return;
-    post("/new").then(() => {
+    app.NewSession().then(() => {
       onNewSession();
       fetchSessions();
     });
   };
 
-  const handleCompact = () => { if (!running) post("/compact"); };
+  const handleCompact = () => { if (!running) app.Compact(); };
   const handleRewind = () => { onOpenRewind(); };
-  const handleTree = () => { post("/submit", { input: "/tree" }); };
+  const handleTree = () => { app.Submit("/tree"); };
   const handleStats = async () => {
     try {
-      const s = await getJSON<any>('/status');
+      const s = await app.Balance() as any;
       const cum: any = (window as any).__cumulativeStats?.() || {};
       setStatsData({
         model: s.label || '-',
@@ -110,7 +103,7 @@ export function Sidebar() {
 
   const handleResume = (s: SessionMeta) => {
     if (running || s.current) return;
-    post("/resume", { path: s.path }).then(() => {
+    app.ResumeSession(s.path).then(() => {
       onNewSession();
       fetchSessions();
     });
@@ -119,7 +112,7 @@ export function Sidebar() {
   const handleDelete = (e: React.MouseEvent, name: string) => {
     e.stopPropagation();
     if (confirm(__("delete_confirm"))) {
-      post("/delete-session", { name }).then(() => fetchSessions());
+      app.DeleteSession(name).then(() => fetchSessions());
     }
   };
 

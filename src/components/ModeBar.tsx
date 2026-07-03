@@ -3,7 +3,7 @@
  */
 import { useEffect, useState } from "react";
 import { __ } from "../lib/i18n";
-import { post } from "../lib/api";
+import { app } from "../lib/bridge";
 
 interface ModeBarProps {
   onModeChange?: () => void;
@@ -55,17 +55,17 @@ export function ModeBar({ onModeChange }: ModeBarProps) {
   const isGoal = localGoalMode || s.goalActive;
 
   const handleAuto = async () => {
-    if (s.plan) await post("/plan", { on: false });
+    if (s.plan) await app.SetPlanMode(false);
     // toggle: auto → ask, ask/other → auto
     const next = isAuto ? "ask" : "auto";
-    await post("/tool-approval-mode", { mode: next });
+    await app.SetToolApprovalMode(next);
     if (localGoalMode) setLocalGoalMode(false);
     onModeChange?.();
     refresh();
   };
 
   const handlePlan = async () => {
-    await post("/plan", { on: !s.plan });
+    await app.SetPlanMode(!s.plan);
     if (localGoalMode) setLocalGoalMode(false);
     onModeChange?.();
     refresh();
@@ -73,7 +73,7 @@ export function ModeBar({ onModeChange }: ModeBarProps) {
 
   const handleYolo = async () => {
     const next = isYolo ? "ask" : "yolo";
-    await post("/tool-approval-mode", { mode: next });
+    await app.SetToolApprovalMode(next);
     if (localGoalMode) setLocalGoalMode(false);
     onModeChange?.();
     refresh();
@@ -81,7 +81,7 @@ export function ModeBar({ onModeChange }: ModeBarProps) {
 
   const handleGoal = () => {
     if (s.goalActive) {
-      post("/goal", { goal: "" }).then(() => refresh());
+      app.ClearGoal().then(() => refresh());
       return;
     }
     setLocalGoalMode(!localGoalMode);

@@ -4,7 +4,7 @@
  */
 import { useEffect, useState, useCallback } from "react";
 import { __ } from "../lib/i18n";
-import { post, getJSON } from "../lib/api";
+import { app } from "../lib/bridge";
 import type { SessionMeta } from "../lib/types";
 
 interface SessionListProps {
@@ -18,7 +18,7 @@ export function SessionList({ onResume }: SessionListProps) {
   const load = useCallback(async () => {
     setError(false);
     try {
-      const ss = await getJSON<SessionMeta[]>("/sessions");
+      const ss = await app.ListSessions();
       if (!ss || ss.length === 0) {
         setSessions([]);
       } else {
@@ -38,7 +38,7 @@ export function SessionList({ onResume }: SessionListProps) {
 
   const handleClick = (s: SessionMeta) => {
     if (s.current) return;
-    post("/resume", { path: s.path }).then(() => {
+    app.ResumeSession(s.path).then(() => {
       const log = document.getElementById("log");
       const welcome = document.getElementById("welcome");
       if (log) {
@@ -55,7 +55,7 @@ export function SessionList({ onResume }: SessionListProps) {
   const handleDelete = (e: React.MouseEvent, name: string) => {
     e.stopPropagation();
     if (confirm(__("delete_confirm"))) {
-      post("/delete-session", { name }).then(() => load());
+      app.DeleteSession(name).then(() => load());
     }
   };
 

@@ -3,7 +3,7 @@
  */
 import { useEffect, useRef, useState, useCallback } from "react";
 import { __ } from "../lib/i18n";
-import { post } from "../lib/api";
+import { app } from "../lib/bridge";
 import { getDispatch } from "./Transcript";
 
 interface SlashCmd {
@@ -60,8 +60,8 @@ export function Composer({ running, onSend, onStop, goalActive, goalText }: Comp
     const v = text.trim();
     if (!v) return;
     // Sync mode before submit
-    await post("/plan", { on: false });
-    await post("/tool-approval-mode", { mode: "ask" });
+    await app.SetPlanMode(false);
+    await app.SetToolApprovalMode("ask");
     let submitInput = v;
     if (goalActive && !v.startsWith("/goal")) {
       submitInput = "/goal " + v;

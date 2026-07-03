@@ -4,7 +4,7 @@
  */
 import { useEffect, useState } from "react";
 import { __ } from "../lib/i18n";
-import { post } from "../lib/api";
+import { app } from "../lib/bridge";
 import type { WireAsk } from "../lib/types";
 
 interface Props {
@@ -61,7 +61,7 @@ export function AskCard({ ask, onDone }: Props) {
       questionId: q.id,
       selected, // matches original: uses LAST question's selection for ALL
     }));
-    post("/answer", { id: ask.id, answers });
+    app.AnswerQuestion(ask.id, answers);
     onDone();
   };
 

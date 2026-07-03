@@ -3,7 +3,7 @@
  */
 import { useEffect } from "react";
 import { __ } from "../lib/i18n";
-import { post } from "../lib/api";
+import { app } from "../lib/bridge";
 import type { WireApproval } from "../lib/types";
 import { bashCommandPrefix, approvalSessionRule, approvalPersistentRule } from "../lib/ui";
 
@@ -18,8 +18,8 @@ export function ApprovalCard({ approval, onDone }: Props) {
   const hasPrefix = prefix !== "";
   const prefixRule = "Bash(" + prefix + ")";
 
-  const resolve = (payload: Record<string, unknown>) => {
-    post("/approve", { id: a.id, ...payload });
+  const resolve = (payload: { allow: boolean; session?: boolean; persist?: boolean; scope?: string }) => {
+    app.Approve(a.id, payload.allow, payload.session ?? false, payload.persist ?? false, payload.scope);
     onDone();
   };
 
