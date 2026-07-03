@@ -275,7 +275,7 @@ input,textarea{font:inherit;color:inherit}
 .stat-card__value.ok{color:var(--success)}
 .stat-card--wide{grid-column:1/-1}
 .sidebar__item--danger{color:var(--danger)}
-.md-body p{margin:.15em 0;line-height:1.6}
+.md-body p{margin:.2em 0}
 .md-body ul,.md-body ol{padding-left:1.5em;margin:.4em 0}
 .md-body li{margin:.2em 0}
 .md-body pre,.code-block{background:var(--bg-2);border-radius:var(--radius);overflow-x:auto}
