@@ -67,6 +67,8 @@ export function Composer({ running, onSend, onStop, goalActive, goalText, onOpen
     onSend(submitInput);
     setText("");
     setSlashOpen(false);
+    // Reset textarea height to default (matching original serve/index.html)
+    if (inputRef.current) inputRef.current.style.height = "";
   }, [text, onSend, goalActive]);
 
   // ── slash menu ──
