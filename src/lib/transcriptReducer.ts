@@ -26,7 +26,7 @@ function ensureAssistant(s: TranscriptState): { id: string; seq: number } {
 // ── reducer ──
 
 export function reducer(state: TranscriptState, action: Action): TranscriptState {
-  const s = structuredClone(state);
+  const s: TranscriptState = { ...state, items: [...state.items] };
   switch (action.type) {
     case "user": {
       const id = nextId("u");

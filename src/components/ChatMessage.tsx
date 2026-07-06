@@ -2,7 +2,7 @@
  * ChatMessage.tsx — renders a user or assistant message bubble.
  * Matches original internal/serve/index.html DOM structure exactly.
  */
-import { useState } from "react";
+import { useState, memo } from "react";
 import { __ } from "../lib/i18n";
 import type { UserItem, AssistantItem, LiveStream } from "../lib/transcriptTypes";
 import { MarkdownRenderer } from "./MarkdownRenderer";
@@ -12,7 +12,7 @@ interface Props {
   live?: LiveStream;
 }
 
-export function ChatMessage({ item, live }: Props) {
+export const ChatMessage = memo(function ChatMessage({ item, live }: Props) {
   if (item.kind === "user") {
     return (
       <div className="msg msg--user">
@@ -60,4 +60,4 @@ export function ChatMessage({ item, live }: Props) {
       {isStreaming && text && <span className="cursor"></span>}
     </div>
   );
-}
+});

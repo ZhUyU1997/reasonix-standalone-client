@@ -7,6 +7,7 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { memo } from "react";
 import type { Components } from "react-markdown";
 import { CodeViewer } from "./CodeViewer";
 
@@ -16,7 +17,7 @@ interface Props {
   text: string;
 }
 
-export function MarkdownRenderer({ text }: Props) {
+export const MarkdownRenderer = memo(function MarkdownRenderer({ text }: Props) {
   const components: Partial<Components> = {
     // Strip the <pre> wrapper react-markdown adds around fenced code blocks —
     // CodeViewer renders its own <pre class="code hljs">.
@@ -49,4 +50,4 @@ export function MarkdownRenderer({ text }: Props) {
       </ReactMarkdown>
     </div>
   );
-}
+});
