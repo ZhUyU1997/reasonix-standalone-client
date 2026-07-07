@@ -7,7 +7,7 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import type { Components } from "react-markdown";
 import { CodeViewer } from "./CodeViewer";
 
@@ -18,11 +18,11 @@ interface Props {
 }
 
 export const MarkdownRenderer = memo(function MarkdownRenderer({ text }: Props) {
-  const components: Partial<Components> = {
+  const components = useMemo(() => ({
     // Strip the <pre> wrapper react-markdown adds around fenced code blocks —
     // CodeViewer renders its own <pre class="code hljs">.
-    pre: ({ children }) => <>{children}</>,
-    code: ({ className, children, ...props }) => {
+    pre: ({ children }: any) => <>{children}</>,
+    code: ({ className, children, ...props }: any) => {
       const text = String(children ?? "");
       const match = /language-([\w-]+)/.exec(className ?? "");
       const isBlock = match !== null || text.includes("\n");
@@ -38,10 +38,10 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({ text }: Props) 
       }
       return <code className="md-code">{text}</code>;
     },
-    a: ({ href, children }) => (
+    a: ({ href, children }: any) => (
       <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>
     ),
-  };
+  }), []);
 
   return (
     <div className="md-body">
