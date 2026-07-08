@@ -435,3 +435,41 @@ code.hljs {
 .diff__row--add .diff__sign{color:var(--success)}
 .diff__row--del .diff__sign{color:var(--danger)}
 .diff__text{flex:1 0 auto;font-family:var(--mono);padding:0 12px 0 8px}
+
+/* ── mermaid diagram ────────────────────────────────────────────────────── */
+.mermaid-diagram{position:relative;display:flex;flex-direction:column;min-width:0;margin:12px 0;overflow:hidden;border:1px solid var(--border);border-radius:8px;background:var(--panel)}
+.mermaid-diagram__toolbar{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;min-height:38px;padding:5px 10px 5px 12px;border-bottom:1px solid var(--border);background:var(--panel-2)}
+.mermaid-diagram__title{min-width:0;overflow:hidden;color:var(--muted);font-size:12px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}
+.mermaid-diagram__actions{display:flex;align-items:center;flex-shrink:0;gap:4px}
+.mermaid-diagram__icon-btn,.mermaid-diagram__copy-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--muted-2);cursor:pointer;transition:background .12s,border-color .12s,color .12s}
+.mermaid-diagram__icon-btn:hover,.mermaid-diagram__copy-btn:hover{border-color:var(--border-strong);background:var(--card-hover);color:var(--fg)}
+.mermaid-diagram__icon-btn:focus-visible,.mermaid-diagram__copy-btn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--accent)}
+.mermaid-diagram__icon-btn--active{border-color:var(--border-strong);background:var(--accent-soft);color:var(--fg)}
+.mermaid-diagram__copy-btn--copied{border-color:var(--border-strong);background:var(--accent-soft);color:var(--accent)}
+.mermaid-diagram__loading{display:flex;align-items:center;justify-content:center;gap:10px;min-height:118px;padding:24px 16px;color:var(--muted);font-size:13px}
+.mermaid-diagram__spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:mermaid-spin .7s linear infinite;display:inline-block}
+@keyframes mermaid-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.mermaid-diagram__spinner{animation:none;border-top-color:var(--border)}}
+.mermaid-diagram__preview-wrap{position:relative;min-width:0}
+.mermaid-diagram__preview{width:100%;height:clamp(220px,46vh,560px);min-width:0;overflow:hidden;background:#fff;cursor:grab;user-select:none}
+:root[data-theme=dark] .mermaid-diagram__preview{background:#111319}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .mermaid-diagram__preview{background:#111319}}
+.mermaid-diagram__preview:active,.mermaid-diagram__preview svg:active,.mermaid-diagram__preview .svg-pan-zoom_viewport:active{cursor:grabbing}
+.mermaid-diagram__preview svg{display:block;width:100%;height:100%;max-width:none;cursor:grab}
+.mermaid-diagram__preview a{cursor:pointer}
+.mermaid-diagram__code{margin:0;border:0;border-radius:0;max-height:420px;overflow:auto}
+.mermaid-diagram__error{background:var(--bg-2)}
+.mermaid-diagram__error-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);font-size:13px;font-weight:500}
+.mermaid-diagram__error-source{margin:0;border:0;border-radius:0;max-height:320px;overflow:auto}
+.mermaid-diagram__error-details{padding:8px 12px 10px;color:var(--muted);font-size:12px}
+.mermaid-diagram__error-details summary{cursor:pointer}
+.mermaid-diagram__error-detail-text{margin:6px 0 0;padding:8px;overflow:auto;border-radius:4px;background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:12px;white-space:pre-wrap;word-break:break-word}
+.mermaid-diagram--placeholder{min-height:40px;border-style:dashed;background:transparent}
+.mermaid-diagram--fullscreen{position:absolute;inset:0;z-index:100;width:100%;height:100%;margin:0;border-radius:0;background:var(--bg)}
+.mermaid-diagram--fullscreen .mermaid-diagram__preview-wrap{display:flex;flex:1;min-height:0}
+.mermaid-diagram--fullscreen .mermaid-diagram__preview{flex:1;height:auto;min-height:0}
+.mermaid-diagram--fullscreen .mermaid-diagram__code{flex:1;max-height:none}
+.mermaid-diagram--fullscreen .mermaid-diagram__zoom-action{display:inline-flex}
+@media(max-width:560px){.mermaid-diagram__toolbar{align-items:flex-start;flex-direction:column}
+.mermaid-diagram__actions{width:100%;flex-wrap:wrap}
+.mermaid-diagram__preview{height:clamp(200px,52vh,480px)}}

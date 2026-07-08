@@ -7,9 +7,11 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { memo, useMemo } from "react";
+import { lazy, memo, Suspense, useMemo } from "react";
 import type { Components } from "react-markdown";
 import { CodeViewer } from "./CodeViewer";
+
+const MermaidDiagram = lazy(() => import("./MermaidDiagram"));
 
 // ── Markdown component ──
 
@@ -25,12 +27,20 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({ text }: Props) 
     code: ({ className, children, ...props }: any) => {
       const text = String(children ?? "");
       const match = /language-([\w-]+)/.exec(className ?? "");
+      const lang = match?.[1] || "";
       const isBlock = match !== null || text.includes("\n");
       if (isBlock) {
-        const lang = match?.[1] || "";
+        const value = text.replace(/\n$/, "");
+        if (lang === "mermaid") {
+          return (
+            <Suspense fallback={<CodeViewer value={value} language="mermaid" maxHeight={360} />}>
+              <MermaidDiagram definition={value} />
+            </Suspense>
+          );
+        }
         return (
           <CodeViewer
-            value={text.replace(/\n$/, "")}
+            value={value}
             language={lang || undefined}
             maxHeight={360}
           />
