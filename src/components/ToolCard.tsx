@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { ToolItem } from "../lib/transcriptTypes";
 import { DiffView } from "./DiffView";
 import { ReadFileView } from "./ReadFileView";
+import { subjectOf } from "../lib/ui";
 
 interface Props {
   item: ToolItem;
@@ -48,7 +49,7 @@ export function ToolCard({ item }: Props) {
           )}
         </span>
         <span className="name">{name}</span>
-        {args && <span className="subject">{trunc(args, 80)}</span>}
+        {args && <span className="subject">{subjectOf(name, args)}</span>}
         <span className="grow"></span>
         <span className="chev">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -118,10 +119,6 @@ function diffsFromArgs(name: string, args: string): { original: string; modified
     }
   } catch {}
   return [];
-}
-
-function trunc(s: string, n: number): string {
-  return s.length > n ? s.slice(0, n) + "…" : s;
 }
 
 const EXT_LANG: Record<string, string> = {

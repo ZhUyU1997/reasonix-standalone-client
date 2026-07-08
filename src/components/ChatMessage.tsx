@@ -57,7 +57,7 @@ export const ChatMessage = memo(function ChatMessage({ item, live }: Props) {
       ) : null}
 
       {/* cursor as sibling after msg__text during streaming — matches original (only after first text chunk) */}
-      {isStreaming && text && <span className="cursor"></span>}
+      {isStreaming && text && false && <span className="cursor"></span>}
     </div>
   );
 });

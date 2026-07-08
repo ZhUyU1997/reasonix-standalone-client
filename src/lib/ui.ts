@@ -79,3 +79,42 @@ export function parseTodos(args: string): TodoItem[] {
   try { const a = JSON.parse(args); return Array.isArray(a.todos) ? a.todos : []; }
   catch { return []; }
 }
+
+// ── tool card subject (one-liner from args) ──
+// subjectOf pulls the most informative one-liner out of a call's args — the
+// command for bash, the pattern for search, the path for file tools — so the
+// collapsed tool card reads at a glance. Mirrors desktop/frontend/src/lib/tools.ts.
+function parseArgs(args: string): Record<string, unknown> {
+  try { return JSON.parse(args) as Record<string, unknown>; } catch { return {}; }
+}
+
+function str(a: Record<string, unknown>, key: string): string {
+  return typeof a[key] === "string" ? (a[key] as string) : "";
+}
+
+export function subjectOf(name: string, args: string): string {
+  const a = parseArgs(args);
+  switch (name) {
+    case "bash":
+      return str(a, "command");
+    case "grep":
+    case "glob":
+      return str(a, "pattern") || str(a, "path");
+    case "web_fetch":
+      return str(a, "url");
+    case "task":
+      return str(a, "description") || str(a, "prompt");
+    case "move_file": {
+      const src = str(a, "source_path");
+      const dst = str(a, "destination_path");
+      return src && dst ? `${src} -> ${dst}` : src || dst;
+    }
+    case "remember":
+      return str(a, "name") || str(a, "description");
+    case "todo_write":
+    case "exit_plan_mode":
+      return ""; // these get dedicated cards, not a subject line
+    default:
+      return str(a, "path") || str(a, "file_path");
+  }
+}
