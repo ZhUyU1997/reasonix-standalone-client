@@ -33,7 +33,7 @@ export function RewindModal({ onClose }: Props) {
       if (!cps || cps.length === 0) {
         setCheckpoints([]);
       } else {
-        setCheckpoints(cps);
+        setCheckpoints([...cps].reverse());
       }
       setLoading(false);
     }).catch(() => setLoading(false));
@@ -110,7 +110,7 @@ export function RewindModal({ onClose }: Props) {
                   onClick={() => { setSel(i); setStage(1); }}
                 >
                   <span className="rewind-picker__turn">#{cp.turn}</span>
-                  <span className="rewind-picker__prompt">{(cp.prompt || "").slice(0, 80)}</span>
+                  <span className="rewind-picker__prompt">{(cp.prompt || "").replace(/^\s*<(?:response-language|reasoning-language)>[\s\S]*?<\/(?:response-language|reasoning-language)>\s*/, "").slice(0, 80)}</span>
                   <span className="rewind-picker__files">{cp.files} {__("files")}</span>
                 </div>
               ))}
@@ -125,7 +125,7 @@ export function RewindModal({ onClose }: Props) {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
               </svg>
-              {" "}{__("action_title").replace("#{turn}", String(checkpoints[sel].turn))}
+              {" "}{__("action_title", { turn: checkpoints[sel].turn })}
             </div>
             <div className="rewind-picker__scopes">
               {SCOPES.map((s, i) => (

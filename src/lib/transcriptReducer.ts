@@ -210,7 +210,9 @@ function historyToItems(msgs: HistoryMessage[]): Item[] {
 
   for (const m of msgs) {
     if (m.role === "user") {
-      items.push({ kind: "user", id: `h-u-${seq}`, text: m.content || "" });
+      // TODO: remove when internal/serve strips transient blocks server-side
+      const text = (m.content || "").replace(/^\s*<(?:response-language|reasoning-language)>[\s\S]*?<\/(?:response-language|reasoning-language)>\s*/, "");
+      items.push({ kind: "user", id: `h-u-${seq}`, text });
     } else if (m.role === "assistant") {
       const id = `h-a-${seq}`;
       const tcArray = (m as any).toolCalls || [];
