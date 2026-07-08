@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import type { ToolItem } from "../lib/transcriptTypes";
 import { DiffView } from "./DiffView";
+import { ReadFileView } from "./ReadFileView";
 
 interface Props {
   item: ToolItem;
@@ -86,6 +87,14 @@ function renderBody(item: ToolItem, dvDiff: string | undefined) {
         </div>
       );
     }
+  }
+  if (t.name === "read_file" && item.outputText) {
+    const lang = detectLang(t.args || "");
+    return (
+      <div className="card-body" style={{ padding: 0, background: "none", maxHeight: "none" }}>
+        <ReadFileView text={item.outputText} language={lang} />
+      </div>
+    );
   }
   return <div className="card-body">{item.outputText}</div>;
 }
