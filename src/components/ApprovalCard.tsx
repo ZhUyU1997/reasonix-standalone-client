@@ -26,11 +26,11 @@ export function ApprovalCard({ approval, onDone }: Props) {
   useEffect(() => {
     const onkey = (e: KeyboardEvent) => {
       const k = e.key.toLowerCase();
-      const stop = () => { e.preventDefault(); resolve({ allow: false, session: false }); };
-      if (k === "y" || k === "1") { e.preventDefault(); resolve({ allow: true, session: false }); }
-      else if (k === "a" || k === "2") { e.preventDefault(); resolve({ allow: true, session: true }); }
-      else if (hasPrefix && k === "3") { e.preventDefault(); resolve({ allow: true, session: true, scope: "prefix" }); }
-      else if (k === "p" || (!hasPrefix && k === "3") || (hasPrefix && k === "4")) { e.preventDefault(); resolve({ allow: true, session: true, persist: true, scope: hasPrefix ? "prefix" : "" }); }
+      const stop = () => { e.preventDefault(); e.stopPropagation(); resolve({ allow: false, session: false }); };
+      if (k === "y" || k === "1") { e.preventDefault(); e.stopPropagation(); resolve({ allow: true, session: false }); }
+      else if (k === "a" || k === "2") { e.preventDefault(); e.stopPropagation(); resolve({ allow: true, session: true }); }
+      else if (hasPrefix && k === "3") { e.preventDefault(); e.stopPropagation(); resolve({ allow: true, session: true, scope: "prefix" }); }
+      else if (k === "p" || (!hasPrefix && k === "3") || (hasPrefix && k === "4")) { e.preventDefault(); e.stopPropagation(); resolve({ allow: true, session: true, persist: true, scope: hasPrefix ? "prefix" : "" }); }
       else if (k === "n" || k === "escape" || (!hasPrefix && k === "4") || (hasPrefix && k === "5")) { stop(); }
     };
     document.addEventListener("keydown", onkey);

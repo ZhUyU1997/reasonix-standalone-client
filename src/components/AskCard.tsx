@@ -65,6 +65,22 @@ export function AskCard({ ask, onDone }: Props) {
     onDone();
   };
 
+  // Esc dismisses the card without answering (sends empty answers)
+  useEffect(() => {
+    const onkey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        const empty = ask.questions.map(q => ({ questionId: q.id, selected: [] as string[] }));
+        app.AnswerQuestion(ask.id, empty);
+        onDone();
+      }
+    };
+    document.addEventListener("keydown", onkey);
+    return () => document.removeEventListener("keydown", onkey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="ask" style={{ margin: "8px 0" }}>
       {ask.questions.map((q, i) => (
