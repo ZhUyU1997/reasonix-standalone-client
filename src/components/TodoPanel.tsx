@@ -12,14 +12,14 @@ interface Props {
 }
 
 export function TodoPanel({ todos, onDismiss }: Props) {
-  const [collapsed, setCollapsed] = useState(false);
-
-  if (!todos.length) return null;
-
   const done = todos.filter(t => String(t.status || "").trim() === "completed").length;
   const total = todos.length;
   const current = todos.find(t => String(t.status || "").trim() === "in_progress");
   const allDone = done === total;
+  const [collapsed, setCollapsed] = useState(allDone);
+
+  if (!todos.length) return null;
+
   const summary = current?.activeForm || current?.content || todos[todos.length - 1]?.content || "";
 
   return (
