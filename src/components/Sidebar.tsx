@@ -29,12 +29,15 @@ interface SidebarProps {
   connState: string;
   onNewSession: () => void;
   onOpenRewind: () => void;
+  hasHistory: boolean;
+  onNotice: (text: string, warn: boolean) => void;
 }
 
-export function Sidebar({ running, connState, onNewSession, onOpenRewind }: SidebarProps) {
+export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHistory, onNotice }: SidebarProps) {
   const [sessions, setSessions] = useState<SessionMeta[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(true);
   const [sessionFilter, setSessionFilter] = useState("");
+  const [checkpointCount, setCheckpointCount] = useState(0);
   const [status, setStatus] = useState<StatusSnapshot | null>(null);
   // stats modal
   const [showStats, setShowStats] = useState(false);
@@ -42,7 +45,12 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
   const sidebarOpen = useLayoutStore((s) => s.sidebarOpen);
   const [statsData, setStatsData] = useState({ model: "-", count: 0, tokens: 0, cost: 0, currency: "", cacheHit: 0, cacheMiss: 0, used: 0, window: 0, balance: "-" });
 
-  // ── fetch sessions ──
+  const fetchCheckpoints = useCallback(async () => {
+    try {
+      const cps = await app.Checkpoints();
+      setCheckpointCount(cps?.length || 0);
+    } catch {}
+  }, []);
   const fetchSessions = useCallback(async () => {
     try {
       const ss = await app.ListSessions();
@@ -62,17 +70,18 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
   useEffect(() => {
     fetchSessions();
     fetchStatus();
+    fetchCheckpoints();
     const si = setInterval(fetchSessions, 30000);
     const ti = setInterval(fetchStatus, 30000);
     return () => { clearInterval(si); clearInterval(ti); };
-  }, [fetchSessions, fetchStatus]);
+  }, [fetchSessions, fetchStatus, fetchCheckpoints]);
 
   // listen for refresh events from other components (new session, submit, etc.)
   useEffect(() => {
-    const onRefresh = () => { fetchSessions(); fetchStatus(); };
+    const onRefresh = () => { fetchSessions(); fetchStatus(); fetchCheckpoints(); };
     window.addEventListener("__refresh-sidebar", onRefresh);
     return () => window.removeEventListener("__refresh-sidebar", onRefresh);
-  }, [fetchSessions, fetchStatus]);
+  }, [fetchSessions, fetchStatus, fetchCheckpoints]);
 
 
   // ── nav handlers ──
@@ -81,11 +90,18 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
     app.NewSession().then(() => {
       onNewSession();
       fetchSessions();
+      fetchCheckpoints();
     });
   };
 
-  const handleCompact = () => { if (!running) app.Compact(); };
-  const handleRewind = () => { onOpenRewind(); };
+  const handleCompact = () => {
+    if (running || !hasHistory) { onNotice(__("no_conversation"), true); return; }
+    app.Compact();
+  };
+  const handleRewind = () => {
+    if (running || checkpointCount === 0) { onNotice(__("no_checkpoints"), true); return; }
+    onOpenRewind();
+  };
   const handleTree = () => { app.Submit("/tree"); };
   const handleStats = async () => {
     try {
@@ -112,6 +128,7 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
     app.ResumeSession(s.path).then(() => {
       onNewSession();
       fetchSessions();
+      fetchCheckpoints();
     });
   };
 
@@ -153,19 +170,18 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
       </div>
 
         <nav className="sidebar__nav" style={{ borderTop: "none", paddingTop: 0 }}>
-          <div
-            className={"sidebar__item" + (running ? "" : " sidebar__item--accent")}
+          <div className={"sidebar__item" + (running ? "" : " sidebar__item--accent")}
             id="btn-new"
             onClick={handleNew}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             <span>{__("new_session")}</span>
           </div>
-          <div className="sidebar__item" id="btn-compact" onClick={handleCompact}>
+          <div className={"sidebar__item" + (running || !hasHistory ? " sidebar__item--disabled" : "")} id="btn-compact" onClick={handleCompact} aria-disabled={running || !hasHistory ? "true" : "false"} title={running || !hasHistory ? (running ? __("thinking") : __("no_conversation")) : ""}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
             <span>{__("compact")}</span>
           </div>
-          <div className="sidebar__item" id="btn-rewind" onClick={handleRewind}>
+          <div className={"sidebar__item" + (running || checkpointCount === 0 ? " sidebar__item--disabled" : "")} id="btn-rewind" onClick={handleRewind} aria-disabled={running || checkpointCount === 0 ? "true" : "false"} title={running || checkpointCount === 0 ? (running ? __("thinking") : __("no_checkpoints")) : ""}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
             <span>{__("rewind")}</span>
           </div>

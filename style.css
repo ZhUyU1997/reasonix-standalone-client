@@ -45,6 +45,8 @@ input,textarea{font:inherit;color:inherit}
 .sidebar__item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;color:var(--fg-2);font-size:13px;transition:background .18s ease,color .18s ease;cursor:pointer}
 .sidebar__item:hover{background:var(--panel);color:var(--fg)}
 .sidebar__item--active{background:var(--accent-soft);color:var(--accent)}
+.sidebar__item--disabled{opacity:.45;cursor:not-allowed}
+.sidebar__item--disabled:hover{background:transparent;color:var(--fg-2)}
 .sidebar__item--accent{background:var(--accent);color:oklch(99% 0 0);font-weight:500;box-shadow:var(--shadow-sm)}
 .sidebar__item--accent:hover{background:var(--accent-strong);color:oklch(99% 0 0)}
 .sidebar__item svg{width:15px;height:15px;flex-shrink:0;opacity:.7}

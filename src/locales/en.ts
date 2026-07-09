@@ -83,6 +83,7 @@ export const en = {
   filter_sessions: "Filter sessions...",
   error_loading: "Error loading",
   no_checkpoints: "No checkpoints available.",
+  no_conversation: "Start a conversation before using this action.",
   compacted: "Compacted",
   messages: "messages",
   compacting: "Compacting...",

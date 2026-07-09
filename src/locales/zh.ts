@@ -83,6 +83,7 @@ const zh: Record<DictKey, string> = {
   filter_sessions: "筛选会话...",
   error_loading: "加载失败",
   no_checkpoints: "暂无可用检查点",
+  no_conversation: "先开始一段对话，再使用此操作。",
   compacted: "已压缩",
   messages: "条消息",
   compacting: "压缩中...",

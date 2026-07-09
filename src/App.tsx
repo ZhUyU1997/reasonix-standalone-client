@@ -5,6 +5,7 @@
  * down as props to child components (matching desktop's approach).
  */
 
+import { useCallback } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { Transcript } from "./components/Transcript";
 import { ModeBar } from "./components/ModeBar";
@@ -21,6 +22,9 @@ import { fmtElapsed, fmtTok } from "./lib/ui";
 export default function App() {
   const { state, submit, cancel, newSession, openRewind, dispatch, dismissTodos, rewindOpen, closeRewind } = useController();
   const sidebarOpen = useLayoutStore((s) => s.sidebarOpen);
+  const onSidebarNotice = useCallback((text: string, warn: boolean) => {
+    dispatch({ type: "event", e: { kind: "notice", text, level: warn ? "warn" : "info" } } as any);
+  }, [dispatch]);
 
   // turnText is recomputed on every render (controller's tick timer keeps it alive)
   const ms = state.running ? (Date.now() - state.turnStartAt) : 0;
@@ -38,6 +42,8 @@ export default function App() {
           connState={state.connState}
           onNewSession={newSession}
           onOpenRewind={openRewind}
+          hasHistory={state.items.some(it => it.kind === "user" || it.kind === "assistant" || it.kind === "tool") || state.live !== null}
+          onNotice={onSidebarNotice}
         />
       </aside>
 
