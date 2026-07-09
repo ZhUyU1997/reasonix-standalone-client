@@ -31,6 +31,8 @@ export default defineConfig({
       "/generate-title":  { target: "http://127.0.0.1:8787", changeOrigin: true },
       "/switch-model":    { target: "http://127.0.0.1:8787", changeOrigin: true },
       "/switch-effort":   { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/models":          { target: "http://127.0.0.1:8787", changeOrigin: true },
+      "/model":           { target: "http://127.0.0.1:8787", changeOrigin: true },
       "/delete-session":  { target: "http://127.0.0.1:8787", changeOrigin: true },
       "/tool-approval-mode": { target: "http://127.0.0.1:8787", changeOrigin: true },
       "/bypass":          { target: "http://127.0.0.1:8787", changeOrigin: true },

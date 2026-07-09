@@ -45,6 +45,8 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
   const sidebarOpen = useLayoutStore((s) => s.sidebarOpen);
   const [statsData, setStatsData] = useState({ model: "-", count: 0, tokens: 0, cost: 0, currency: "", cacheHit: 0, cacheMiss: 0, used: 0, window: 0, balance: "-" });
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const [models, setModels] = useState<any[] | null>(null);
+  const [showModels, setShowModels] = useState(false);
 
   const fetchCheckpoints = useCallback(async () => {
     try {
@@ -104,6 +106,17 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
     onOpenRewind();
   };
   const handleTree = () => { app.Submit("/tree"); };
+  const handleModels = () => {
+    setShowModels(true);
+    if (!models) {
+      fetch("/models").then(r => r.json()).then(d => setModels(Array.isArray(d?.models) ? d.models : [])).catch(() => setModels([]));
+    }
+  };
+  const handleSwitchModel = (ref: string) => {
+    if (!ref || running) return;
+    setShowModels(false);
+    app.Submit("/model " + ref);
+  };
   const handleStats = async () => {
     try {
       const s = await app.Balance() as any;
@@ -191,6 +204,10 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
           <div className="sidebar__item" id="btn-tree" onClick={handleTree}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
             <span>{__("branches")}</span>
+          </div>
+          <div className="sidebar__item" id="btn-models" onClick={handleModels}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3"/><path d="M15 1v3"/><path d="M9 20v3"/><path d="M15 20v3"/><path d="M20 9h3"/><path d="M20 14h3"/><path d="M1 9h3"/><path d="M1 14h3"/></svg>
+            <span>{__("models")}</span>
           </div>
           <div className="sidebar__sep"></div>
           <div className="sidebar__item" id="btn-stats" onClick={handleStats}>
@@ -281,6 +298,38 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
         </div>
       )}
       {/* stats modal */}
+      {showModels && (
+        <div className="modal-overlay" onClick={() => setShowModels(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal__head">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
+              {__("models")}
+              <span className="modal__close" onClick={() => setShowModels(false)}>&times;</span>
+            </div>
+            <div className="modal__body">
+              <div className="model-list">
+                {!models ? (
+                  <div className="empty-note">{__("loading")}</div>
+                ) : models.length === 0 ? (
+                  <div className="empty-note">{__("error_loading")}</div>
+                ) : models.map(m => (
+                  <div key={m.ref} className={"model-item" + (m.active ? " model-item--active" : "")}>
+                    <div>
+                      <div className="model-item__title">{escHtml(m.ref || "")}</div>
+                      <div className="model-item__meta">{[m.kind, m.default ? "default" : ""].filter(Boolean).join(" · ")}</div>
+                    </div>
+                    {m.active ? (
+                      <span className="model-item__status model-item__status--active">{__("active")}</span>
+                    ) : (
+                      <button className="branch-item__btn" onClick={() => handleSwitchModel(m.ref)}>{__("use_model")}</button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {showStats && (
         <div className="modal-overlay" id="stats-modal" style={{ display: "flex" }} onClick={() => setShowStats(false)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
