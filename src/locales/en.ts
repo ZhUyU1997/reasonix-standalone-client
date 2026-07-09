@@ -25,7 +25,7 @@ export const en = {
   model: "Model",
   total_tokens: "Total Tokens",
   cache_hit_rate: "Cache Hit Rate",
-  total_cost: "Total Cost",
+  total_cost: "Session Cost",
   context_usage: "Context Usage",
   connected: "Connected",
   reconnecting: "Reconnecting...",

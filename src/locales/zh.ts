@@ -25,7 +25,7 @@ const zh: Record<DictKey, string> = {
   model: "模型",
   total_tokens: "总 Token",
   cache_hit_rate: "缓存命中率",
-  total_cost: "总费用",
+  total_cost: "会话费用",
   context_usage: "上下文用量",
   connected: "已连接",
   reconnecting: "重新连接...",

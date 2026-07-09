@@ -181,6 +181,10 @@ export function useController(): Controller {
     dispatch({ type: "clear" } as any);
     setTodos([]);
     setTodosDismissed(false);
+    setCumulativeTokens(0);
+    setCumulativeCost(0);
+    setCumulativeCacheHit(0);
+    setCumulativeCacheMiss(0);
     // Fetch new history after short delay (matches original 300ms)
     await sleep(300);
     try {
