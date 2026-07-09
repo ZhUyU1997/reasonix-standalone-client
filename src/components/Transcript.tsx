@@ -65,7 +65,9 @@ export function Transcript({ items, live: liv, dispatch }: TranscriptProps) {
       {/* welcome */}
       {isEmpty && (
         <div className="welcome" id="welcome">
-          <div className="welcome__logo">R</div>
+          <div className="welcome__brand">
+            <img src="/logo-wordmark.svg" alt="Reasonix" className="brand-wordmark brand-wordmark--welcome" draggable={false} />
+          </div>
           <div className="welcome__title">Reasonix</div>
           <div className="welcome__tag">{__("welcome_tag")}</div>
           <div className="welcome__hints">

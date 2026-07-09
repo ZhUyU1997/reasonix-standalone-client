@@ -148,9 +148,8 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
       {sidebarOpen && <div className="sidebar-overlay" id="sidebar-overlay" onClick={toggleSidebar}></div>}
 
       <div className="sidebar__brand">
-          <div className="sidebar__logo">R</div>
-          <span className="sidebar__name">Reasonix</span>
-        </div>
+        <img src="/logo-wordmark.svg" alt="Reasonix" className="brand-wordmark brand-wordmark--sidebar" draggable={false} />
+      </div>
 
         <nav className="sidebar__nav" style={{ borderTop: "none", paddingTop: 0 }}>
           <div
