@@ -94,6 +94,7 @@ const zh: Record<DictKey, string> = {
   scope_sumfrom: "从此处总结",
   scope_sumupto: "总结到此处",
   delete_confirm: "删除此会话？",
+  delete_session: "删除会话",
   welcome_tag: "AI 编码助手",
   hint_commands: "/ 命令",
   hint_mode: "计划",

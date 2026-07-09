@@ -44,6 +44,7 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
   const toggleSidebar = useLayoutStore((s) => s.toggleSidebar);
   const sidebarOpen = useLayoutStore((s) => s.sidebarOpen);
   const [statsData, setStatsData] = useState({ model: "-", count: 0, tokens: 0, cost: 0, currency: "", cacheHit: 0, cacheMiss: 0, used: 0, window: 0, balance: "-" });
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   const fetchCheckpoints = useCallback(async () => {
     try {
@@ -134,9 +135,11 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
 
   const handleDelete = (e: React.MouseEvent, name: string) => {
     e.stopPropagation();
-    if (confirm(__("delete_confirm"))) {
-      app.DeleteSession(name).then(() => fetchSessions());
-    }
+    setPendingDelete(name);
+  };
+  const confirmDelete = () => {
+    if (!pendingDelete) return;
+    app.DeleteSession(pendingDelete).then(() => { fetchSessions(); setPendingDelete(null); });
   };
 
   // ── render helpers ──
@@ -259,6 +262,24 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
             </div>
           </div>
         </div>
+      {/* delete modal */}
+      {pendingDelete && (
+        <div className="modal-overlay" onClick={() => setPendingDelete(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal__head">
+              {__("delete_session")}
+              <span className="modal__close" onClick={() => setPendingDelete(null)}>&times;</span>
+            </div>
+            <div className="modal__body">
+              <div className="empty-note" id="delete-session-title">{pendingDelete}</div>
+              <div className="dialog-actions">
+                <button className="dialog-btn" type="button" onClick={() => setPendingDelete(null)}>{__("cancel")}</button>
+                <button className="dialog-btn dialog-btn--danger" type="button" onClick={confirmDelete}>{__("delete")}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* stats modal */}
       {showStats && (
         <div className="modal-overlay" id="stats-modal" style={{ display: "flex" }} onClick={() => setShowStats(false)}>

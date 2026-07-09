@@ -94,6 +94,7 @@ export const en = {
   scope_sumfrom: "Summarize from here",
   scope_sumupto: "Summarize up to here",
   delete_confirm: "Delete this session?",
+  delete_session: "Delete Session",
   welcome_tag: "AI coding agent",
   hint_commands: "/ commands",
   hint_mode: "Plan",
