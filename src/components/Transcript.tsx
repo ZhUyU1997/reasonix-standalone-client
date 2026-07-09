@@ -2,7 +2,7 @@
  * Transcript.tsx — main transcript component.
  * Renders welcome + message items, handles auto-scroll during streaming.
  */
-import { useEffect, useRef, useCallback } from "react";
+import { useLayoutEffect, useRef, useCallback } from "react";
 import { __ } from "../lib/i18n";
 import type { Item, LiveStream } from "../lib/transcriptTypes";
 import { ChatMessage } from "./ChatMessage";
@@ -21,27 +21,23 @@ interface TranscriptProps {
 
 export function Transcript({ items, live: liv, dispatch, model, cwd }: TranscriptProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const stickRef = useRef(true);
-  const autoScrollFrame = useRef<number | null>(null);
+  const firstScrolled = useRef(false);
 
-  // auto-scroll during streaming
-  useEffect(() => {
-    if (!stickRef.current) return;
-    if (autoScrollFrame.current !== null) return;
+  // Scroll to bottom on content changes — first scroll instant, subsequent smooth.
+  useLayoutEffect(() => {
+    if (items.length === 0 && !liv) return;
     const el = scrollRef.current;
     if (!el) return;
-    autoScrollFrame.current = requestAnimationFrame(() => {
-      autoScrollFrame.current = null;
-      if (!stickRef.current || !el) return;
-      el.scrollTop = el.scrollHeight;
-    });
+    const first = !firstScrolled.current;
+    firstScrolled.current = true;
+    el.scrollTo({ top: el.scrollHeight - el.clientHeight, behavior: first ? "instant" : "smooth" });
   }, [items.length, liv?.text?.length ?? 0, liv?.reasoning?.length ?? 0]);
 
   const live = liv;
 
   const scrollDown = useCallback(() => {
     const el = scrollRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
+    if (el) el.scrollTo({ top: el.scrollHeight - el.clientHeight, behavior: "instant" });
   }, []);
 
   // handle welcome examples trigger
@@ -52,13 +48,7 @@ export function Transcript({ items, live: liv, dispatch, model, cwd }: Transcrip
   const isEmpty = items.length === 0 && !live;
 
   return (
-    <section className="transcript" id="log" ref={scrollRef}
-      onScroll={() => {
-        const el = scrollRef.current;
-        if (!el) return;
-        stickRef.current = el.scrollTop + el.clientHeight >= el.scrollHeight - 60;
-      }}
-    >
+    <section className="transcript" id="log" ref={scrollRef}>
       {/* welcome */}
       {isEmpty && (
         <div className="welcome" id="welcome">

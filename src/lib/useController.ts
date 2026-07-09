@@ -97,9 +97,10 @@ export function useController(): Controller {
   // ── SSE connection — runs once on mount ──
   useEffect(() => {
     // Load history on boot
+    const todosPromise = app.Todos();
     app.History().then((msgs: HistoryMessage[]) => {
       dispatch({ type: "history", messages: msgs } as any);
-      fetchTodos();
+      todosPromise.then(ts => { if (Array.isArray(ts)) setTodos(ts); });
     }).catch(() => {});
 
     // SSE event handler
