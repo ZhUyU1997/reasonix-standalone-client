@@ -9,6 +9,21 @@ import { initialState } from "./transcriptTypes";
 let _nextId = 1;
 function nextId(prefix = "m"): string { return prefix + (_nextId++); }
 
+// StripReasonixTransientBlocks removes controller-injected transient XML blocks
+// (<response-language>, <reasoning-language>, etc.) from user message text.
+// These blocks prefix the user's turn in the prompt but should not appear in
+// the transcript. Matches Go's internal/agent/preview.go StripTransientUserBlocks.
+const TRANSIENT_BLOCK_RE = /^\s*<(?:response-language|reasoning-language|memory-update|background-jobs|active-goal|hook-context|capability-route)(?:\s+[^>]*)?>[\s\S]*?<\/(?:response-language|reasoning-language|memory-update|background-jobs|active-goal|hook-context|capability-route)>\s*\n?/;
+function stripTransientBlocks(text: string): string {
+  let s = text;
+  let prev: string;
+  do {
+    prev = s;
+    s = s.replace(TRANSIENT_BLOCK_RE, "");
+  } while (s !== prev);
+  return s.trimStart();
+}
+
 // ── helpers ──
 
 function ensureAssistant(s: TranscriptState): { id: string; seq: number } {
@@ -30,7 +45,8 @@ export function reducer(state: TranscriptState, action: Action): TranscriptState
   switch (action.type) {
     case "user": {
       const id = nextId("u");
-      s.items.push({ kind: "user", id, text: action.text });
+      const text = stripTransientBlocks(action.text || "");
+      s.items.push({ kind: "user", id, text });
       return s;
     }
     case "history": {
@@ -210,8 +226,7 @@ function historyToItems(msgs: HistoryMessage[]): Item[] {
 
   for (const m of msgs) {
     if (m.role === "user") {
-      // TODO: remove when internal/serve strips transient blocks server-side
-      const text = (m.content || "").replace(/^\s*<(?:response-language|reasoning-language)>[\s\S]*?<\/(?:response-language|reasoning-language)>\s*/, "");
+      const text = stripTransientBlocks(m.content || "");
       items.push({ kind: "user", id: `h-u-${seq}`, text });
     } else if (m.role === "assistant") {
       const id = `h-a-${seq}`;

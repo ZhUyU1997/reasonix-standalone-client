@@ -17,6 +17,14 @@ const SCOPES = [
   { key: "u", label: "scope_sumupto", scope: "sumupto" },
 ];
 
+const RE_TRANSIENT_BLOCK = /^\s*<(?:response-language|reasoning-language|memory-update|background-jobs|active-goal|hook-context|capability-route)(?:\s+[^>]*)?>[\s\S]*?<\/(?:response-language|reasoning-language|memory-update|background-jobs|active-goal|hook-context|capability-route)>\s*\n?/;
+function stripTransient(text: string): string {
+  let s = text;
+  let prev: string;
+  do { prev = s; s = s.replace(RE_TRANSIENT_BLOCK, ""); } while (s !== prev);
+  return s.trimStart();
+}
+
 interface Props {
   onClose: () => void;
 }
@@ -110,7 +118,7 @@ export function RewindModal({ onClose }: Props) {
                   onClick={() => { setSel(i); setStage(1); }}
                 >
                   <span className="rewind-picker__turn">#{cp.turn}</span>
-                  <span className="rewind-picker__prompt">{(cp.prompt || "").replace(/^\s*<(?:response-language|reasoning-language)>[\s\S]*?<\/(?:response-language|reasoning-language)>\s*/, "").slice(0, 80)}</span>
+                  <span className="rewind-picker__prompt">{stripTransient(cp.prompt || "").slice(0, 80)}</span>
                   <span className="rewind-picker__files">{cp.files} {__("files")}</span>
                 </div>
               ))}
