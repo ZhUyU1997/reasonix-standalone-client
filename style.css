@@ -307,6 +307,11 @@ input,textarea{font:inherit;color:inherit}
 .dialog-btn{height:30px;padding:0 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg-2);color:var(--fg-2);font-size:12px}
 .dialog-btn:hover{border-color:var(--border-strong);color:var(--fg)}
 .dialog-btn--danger{background:var(--danger-soft);border-color:transparent;color:var(--danger)}
+.branch-tree{font-family:var(--mono);font-size:12px;line-height:1.6;color:var(--fg-2);white-space:pre-wrap;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:10px;max-height:220px;overflow:auto}
+.branch-list{display:grid;gap:6px;margin-top:10px}
+.branch-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-2)}
+.branch-item__title{font-weight:600;font-size:12.5px;color:var(--fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.branch-item__meta{font-family:var(--mono);font-size:10.5px;color:var(--muted-2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .stat-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:12px}
 .stat-card__label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}

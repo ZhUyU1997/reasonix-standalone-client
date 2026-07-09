@@ -47,6 +47,8 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [models, setModels] = useState<any[] | null>(null);
   const [showModels, setShowModels] = useState(false);
+  const [branches, setBranches] = useState<any>(null);
+  const [showBranches, setShowBranches] = useState(false);
 
   const fetchCheckpoints = useCallback(async () => {
     try {
@@ -105,7 +107,17 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
     if (running || checkpointCount === 0) { onNotice(__("no_checkpoints"), true); return; }
     onOpenRewind();
   };
-  const handleTree = () => { app.Submit("/tree"); };
+  const handleBranches = () => {
+    setShowBranches(true);
+    if (!branches) {
+      fetch("/branches").then(r => r.json()).then(setBranches).catch(() => setBranches({}));
+    }
+  };
+  const handleSwitchBranch = (id: string) => {
+    if (!id || running) return;
+    setShowBranches(false);
+    app.Submit("/switch " + id);
+  };
   const handleModels = () => {
     setShowModels(true);
     if (!models) {
@@ -201,7 +213,7 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
             <span>{__("rewind")}</span>
           </div>
-          <div className="sidebar__item" id="btn-tree" onClick={handleTree}>
+          <div className="sidebar__item" id="btn-tree" onClick={handleBranches}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
             <span>{__("branches")}</span>
           </div>
@@ -298,6 +310,45 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind, hasHis
         </div>
       )}
       {/* stats modal */}
+      {showBranches && (
+        <div className="modal-overlay" onClick={() => setShowBranches(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal__head">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+              {__("branches")}
+              <span className="modal__close" onClick={() => setShowBranches(false)}>&times;</span>
+            </div>
+            <div className="modal__body">
+              <div className="branch-tree">{(branches as any)?.tree || __("loading")}</div>
+              <div className="branch-list">
+                {!branches ? (
+                  <div className="empty-note">{__("loading")}</div>
+                ) : !Array.isArray((branches as any)?.branches) || (branches as any).branches.length === 0 ? (
+                  <div className="empty-note">{__("no_branches")}</div>
+                ) : (branches as any).branches.map((b: any) => {
+                  const id = b.id || b.ID || "";
+                  const title = b.custom_title || b.CustomTitle || b.name || b.Name || b.topic_title || b.TopicTitle || id || "branch";
+                  const preview = b.preview || b.Preview || "";
+                  const turns = b.turns || b.Turns;
+                  const model = b.model || b.Model || "";
+                  const meta = [turns ? turns + " turns" : "", model, preview].filter(Boolean).join(" · ");
+                  const truncatedMeta = meta.length > 80 ? meta.slice(0, 77) + "..." : meta;
+                  const truncatedTitle = title.length > 50 ? title.slice(0, 47) + "..." : title;
+                  return (
+                    <div key={id} className="branch-item">
+                      <div style={{ minWidth: 0 }}>
+                        <div className="branch-item__title">{escHtml(truncatedTitle)}</div>
+                        <div className="branch-item__meta">{escHtml(truncatedMeta || id)}</div>
+                      </div>
+                      <button className="branch-item__btn" onClick={() => handleSwitchBranch(id)}>{__("switch")}</button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {showModels && (
         <div className="modal-overlay" onClick={() => setShowModels(false)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
