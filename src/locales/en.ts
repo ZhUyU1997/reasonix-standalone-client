@@ -80,6 +80,7 @@ export const en = {
   send: "Send (Enter)",
   cancel: "Cancel (Esc)",
   no_sessions: "No sessions",
+  filter_sessions: "Filter sessions...",
   error_loading: "Error loading",
   no_checkpoints: "No checkpoints available.",
   compacted: "Compacted",

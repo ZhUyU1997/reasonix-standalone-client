@@ -80,6 +80,7 @@ const zh: Record<DictKey, string> = {
   send: "发送 (Enter)",
   cancel: "取消 (Esc)",
   no_sessions: "暂无会话",
+  filter_sessions: "筛选会话...",
   error_loading: "加载失败",
   no_checkpoints: "暂无可用检查点",
   compacted: "已压缩",

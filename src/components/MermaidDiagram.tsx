@@ -415,7 +415,7 @@ const MermaidDiagram = memo(function MermaidDiagram({ definition }: Props) {
   const toggleFullscreen = useCallback(() => {
     setFullscreen((current) => {
       const next = !current;
-      setPortalTarget(next ? document.querySelector("#transcript-root") ?? document.body : null);
+      setPortalTarget(next ? document.body : null);
       return next;
     });
   }, []);

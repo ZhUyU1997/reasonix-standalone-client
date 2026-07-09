@@ -34,6 +34,7 @@ interface SidebarProps {
 export function Sidebar({ running, connState, onNewSession, onOpenRewind }: SidebarProps) {
   const [sessions, setSessions] = useState<SessionMeta[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(true);
+  const [sessionFilter, setSessionFilter] = useState("");
   const [status, setStatus] = useState<StatusSnapshot | null>(null);
   // stats modal
   const [showStats, setShowStats] = useState(false);
@@ -180,12 +181,24 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
         </nav>
 
         <div className="sidebar__label" style={{ padding: "8px 10px 4px" }}>{__("sessions")}</div>
+        <div className="session-search">
+          <input className="session-search__input" id="session-search" placeholder={__("filter_sessions")} value={sessionFilter} onChange={e => setSessionFilter(e.target.value)} />
+        </div>
         <div className="session-list">
           {sessionsLoading ? (
             <div style={{ padding: "10px", color: "var(--muted-2)", fontSize: "12px" }}>{__("loading")}</div>
-          ) : sessions.length === 0 ? (
-            <div style={{ padding: "10px", color: "var(--muted-2)", fontSize: "12px" }}>{__("no_sessions")}</div>
-          ) : sessions.map(s => {
+          ) : (() => {
+            const q = sessionFilter.trim().toLowerCase();
+            const filtered = q ? sessions.filter(s => {
+              const name = (s.name || "").replace(/^.*\//, "").replace(/\.jsonl$/, "");
+              const title = s.title || name.replace(/^\w+-/, "").replace(/T/, " ").replace(/[-_]/g, " ");
+              const hay = [title, s.name, s.path, String(s.turns || "")].join(" ").toLowerCase();
+              return hay.includes(q);
+            }) : sessions;
+            if (filtered.length === 0) {
+              return <div style={{ padding: "10px", color: "var(--muted-2)", fontSize: "12px" }}>{__("no_sessions")}</div>;
+            }
+            return filtered.map(s => {
             const name = (s.name || "").replace(/^.*\//, "").replace(/\.jsonl$/, "");
             const title = s.title || name.replace(/^\w+-/, "").replace(/T/, " ").replace(/[-_]/g, " ").slice(0, 30);
             const meta = s.turns ? s.turns + " turns" : "";
@@ -203,7 +216,8 @@ export function Sidebar({ running, connState, onNewSession, onOpenRewind }: Side
                 <button type="button" className="session-del" data-name={s.name} title={__("delete_confirm")} onClick={(e) => handleDelete(e, s.name)}>&times;</button>
               </div>
             );
-          })}
+          });
+        })()}
         </div>
 
         <div className="sidebar__section">

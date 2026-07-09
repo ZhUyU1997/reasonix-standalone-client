@@ -15,23 +15,20 @@ interface TranscriptProps {
   items: Item[];
   live: LiveStream | null;
   dispatch: (a: any) => void;
+  model?: string;
+  cwd?: string;
 }
 
-export function Transcript({ items, live: liv, dispatch }: TranscriptProps) {
+export function Transcript({ items, live: liv, dispatch, model, cwd }: TranscriptProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const parentRef = useRef<HTMLElement | null>(null);
   const stickRef = useRef(true);
   const autoScrollFrame = useRef<number | null>(null);
-
-  useEffect(() => {
-    parentRef.current = document.getElementById("transcript-root");
-  }, []);
 
   // auto-scroll during streaming
   useEffect(() => {
     if (!stickRef.current) return;
     if (autoScrollFrame.current !== null) return;
-    const el = parentRef.current || scrollRef.current;
+    const el = scrollRef.current;
     if (!el) return;
     autoScrollFrame.current = requestAnimationFrame(() => {
       autoScrollFrame.current = null;
@@ -43,7 +40,7 @@ export function Transcript({ items, live: liv, dispatch }: TranscriptProps) {
   const live = liv;
 
   const scrollDown = useCallback(() => {
-    const el = parentRef.current || scrollRef.current;
+    const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, []);
 
@@ -57,7 +54,7 @@ export function Transcript({ items, live: liv, dispatch }: TranscriptProps) {
   return (
     <section className="transcript" id="log" ref={scrollRef}
       onScroll={() => {
-        const el = parentRef.current || scrollRef.current;
+        const el = scrollRef.current;
         if (!el) return;
         stickRef.current = el.scrollTop + el.clientHeight >= el.scrollHeight - 60;
       }}
@@ -68,8 +65,13 @@ export function Transcript({ items, live: liv, dispatch }: TranscriptProps) {
           <div className="welcome__brand">
             <img src="/logo-wordmark.svg" alt="Reasonix" className="brand-wordmark brand-wordmark--welcome" draggable={false} />
           </div>
-          <div className="welcome__title">Reasonix</div>
           <div className="welcome__tag">{__("welcome_tag")}</div>
+          {(model || cwd) && (
+            <div className="welcome__meta">
+              {model && <span className="welcome__pill"><strong>Model</strong><span id="welcome-model">{model}</span></span>}
+              {cwd && <span className="welcome__pill"><strong>Workspace</strong><span id="welcome-cwd">{cwd}</span></span>}
+            </div>
+          )}
           <div className="welcome__hints">
             <span><kbd>/</kbd> {__("hint_commands")}</span>
             <span><kbd>Shift+Tab</kbd> {__("hint_mode")}</span>

@@ -29,6 +29,8 @@ export interface ControllerState {
   turnTokens: number;
   balanceText: string;
   goalActive: boolean;
+  model: string;
+  cwd: string;
   retryStatus: { attempt: number; max: number } | null;
   todos: TodoItem[];
   cumulativeTokens: number;
@@ -60,6 +62,8 @@ export function useController(): Controller {
   const [turnTokens, setTurnTokens] = useState(0);
   const [balanceText, setBalanceText] = useState("");
   const [goalActive, setGoalActive] = useState(false);
+  const [model, setModel] = useState("");
+  const [cwd, setCwd] = useState("");
   const [retryStatus, setRetryStatus] = useState<{ attempt: number; max: number } | null>(null);
   const [cumulativeTokens, setCumulativeTokens] = useState(0);
   const [cumulativeCost, setCumulativeCost] = useState(0);
@@ -77,6 +81,8 @@ export function useController(): Controller {
   const refreshStatus = useCallback(async () => {
     try {
       const s = await app.Balance();
+      setModel(s.label || "");
+      setCwd((s.cwd || "").replace(/^.*\//, ""));
       setBalanceText(s.balance ? "💰 " + (s.balance.display || "") : "");
       setGoalActive(!!(s.goal && (s.goalStatus || "") === "running"));
     } catch { /* ignore */ }
@@ -220,6 +226,8 @@ export function useController(): Controller {
       turnTokens,
       balanceText,
       goalActive,
+      model,
+      cwd,
       retryStatus,
       todos,
       cumulativeTokens,

@@ -41,9 +41,7 @@ export default function App() {
         />
       </aside>
 
-      <div id="transcript-root" className="transcript">
-        <Transcript items={state.items} live={state.live} dispatch={dispatch} />
-      </div>
+      <Transcript items={state.items} live={state.live} dispatch={dispatch} model={state.model} cwd={state.cwd} />
 
       <footer className="footer">
         <TodoPanel todos={state.todos} onDismiss={dismissTodos} />
