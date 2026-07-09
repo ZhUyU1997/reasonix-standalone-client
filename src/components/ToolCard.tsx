@@ -7,6 +7,7 @@ import type { ToolItem } from "../lib/transcriptTypes";
 import { DiffView } from "./DiffView";
 import { ReadFileView } from "./ReadFileView";
 import { subjectOf } from "../lib/ui";
+import { CopyButton } from "./CopyButton";
 
 interface Props {
   item: ToolItem;
@@ -51,6 +52,11 @@ export function ToolCard({ item }: Props) {
         <span className="name">{name}</span>
         {args && <span className="subject">{subjectOf(name, args)}</span>}
         <span className="grow"></span>
+        {open && (
+          <span className="card-actions">
+            <CopyButton text={item.outputText || t.output || ""} className="card-action" />
+          </span>
+        )}
         <span className="chev">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="6 9 12 15 18 9"/>
