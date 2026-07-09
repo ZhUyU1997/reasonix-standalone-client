@@ -7,28 +7,36 @@ import { __ } from "../lib/i18n";
 interface SlashCmd {
   cmd: string;
   desc: string;
+  sig: string;
+  group: string;
+  danger?: boolean;
 }
 
 const SLASH_CMDS: SlashCmd[] = [
-  {cmd: "compact", desc: __("cmd_compact")},
-  {cmd: "new", desc: __("cmd_new")},
-  {cmd: "resume", desc: __("cmd_resume")},
-  {cmd: "rewind", desc: __("cmd_rewind")},
-  {cmd: "tree", desc: __("cmd_tree")},
-  {cmd: "branch", desc: __("cmd_branch")},
-  {cmd: "switch", desc: __("cmd_switch")},
-  {cmd: "model", desc: __("cmd_model")},
-  {cmd: "effort", desc: __("cmd_effort")},
-  {cmd: "mcp", desc: __("cmd_mcp")},
-  {cmd: "skill", desc: __("cmd_skill")},
-  {cmd: "hooks", desc: __("cmd_hooks")},
-  {cmd: "memory", desc: __("cmd_memory")},
-  {cmd: "forget", desc: __("cmd_forget")},
-  {cmd: "goal", desc: __("cmd_goal")},
-  {cmd: "thinking", desc: __("cmd_thinking")},
-  {cmd: "verbose", desc: __("cmd_verbose")},
-  {cmd: "help", desc: __("cmd_help")},
+  {cmd: "new", sig: "/new", desc: __("cmd_new"), group: "session"},
+  {cmd: "resume", sig: "/resume [n]", desc: __("cmd_resume"), group: "session"},
+  {cmd: "compact", sig: "/compact", desc: __("cmd_compact"), group: "session"},
+  {cmd: "rewind", sig: "/rewind", desc: __("cmd_rewind"), group: "session"},
+  {cmd: "tree", sig: "/tree", desc: __("cmd_tree"), group: "branch"},
+  {cmd: "branch", sig: "/branch <name>", desc: __("cmd_branch"), group: "branch"},
+  {cmd: "switch", sig: "/switch <id>", desc: __("cmd_switch"), group: "branch"},
+  {cmd: "model", sig: "/model [provider/model]", desc: __("cmd_model"), group: "model"},
+  {cmd: "effort", sig: "/effort <level>", desc: __("cmd_effort"), group: "model"},
+  {cmd: "goal", sig: "/goal <task>", desc: __("cmd_goal"), group: "agent"},
+  {cmd: "thinking", sig: "/thinking <level>", desc: __("cmd_thinking"), group: "agent"},
+  {cmd: "verbose", sig: "/verbose", desc: __("cmd_verbose"), group: "agent"},
+  {cmd: "mcp", sig: "/mcp", desc: __("cmd_mcp"), group: "system"},
+  {cmd: "skill", sig: "/skill", desc: __("cmd_skill"), group: "system"},
+  {cmd: "hooks", sig: "/hooks", desc: __("cmd_hooks"), group: "system"},
+  {cmd: "memory", sig: "/memory", desc: __("cmd_memory"), group: "memory"},
+  {cmd: "forget", sig: "/forget <item>", desc: __("cmd_forget"), group: "memory", danger: true},
+  {cmd: "help", sig: "/help", desc: __("cmd_help"), group: "help"},
 ];
+const SLASH_GROUPS = ["session", "branch", "model", "agent", "system", "memory", "help"];
+function slashGroupLabel(group: string): string {
+  const key = "cmd_group_" + group;
+  return (__ as any)(key) || group;
+}
 
 interface ComposerProps {
   running: boolean;
@@ -78,7 +86,14 @@ export function Composer({ running, onSend, onStop, goalActive, goalText, onOpen
       return;
     }
     const q = val.slice(1).toLowerCase();
-    const filtered = SLASH_CMDS.filter(c => c.cmd.includes(q));
+    const filtered = SLASH_CMDS.filter(c => {
+      const hay = [c.cmd, c.sig, c.desc, slashGroupLabel(c.group)].join(' ').toLowerCase();
+      return hay.includes(q);
+    }).sort((a, b) => {
+      const ap = a.cmd.startsWith(q) ? 0 : 1;
+      const bp = b.cmd.startsWith(q) ? 0 : 1;
+      return ap - bp || SLASH_CMDS.indexOf(a) - SLASH_CMDS.indexOf(b);
+    });
     if (filtered.length === 0) { setSlashOpen(false); return; }
     setSlashFiltered(filtered);
     setSlashIndex(0);
@@ -147,6 +162,13 @@ export function Composer({ running, onSend, onStop, goalActive, goalText, onOpen
     return () => window.removeEventListener("keydown", handler);
   }, [running, text, onStop]);
 
+  // Scroll active slash item into view
+  useEffect(() => {
+    if (!slashOpen) return;
+    const active = document.querySelector(".slash-menu__item--active");
+    if (active) active.scrollIntoView({ block: "nearest" });
+  }, [slashOpen, slashIndex]);
+
   const placeholder = goalActive ? __("goal_placeholder") : __("placeholder");
 
   return (
@@ -154,17 +176,43 @@ export function Composer({ running, onSend, onStop, goalActive, goalText, onOpen
       {/* slash menu */}
       {slashOpen && (
         <div className="slash-menu" id="slash-menu">
-          {slashFiltered.map((c, i) => (
-            <button
-              key={c.cmd}
-              className={"slash-menu__item" + (i === slashIndex ? " slash-menu__item--active" : "")}
-              onMouseEnter={() => setSlashIndex(i)}
-              onClick={() => { setText("/" + c.cmd + " "); setSlashOpen(false); inputRef.current?.focus(); }}
-            >
-              <span className="slash-menu__name">/{c.cmd}</span>
-              <span className="slash-menu__desc">{c.desc}</span>
-            </button>
-          ))}
+          <div className="slash-menu__head">
+            <span>{__("command_palette")}</span>
+            <span className="slash-menu__query">/{text.slice(1)}</span>
+          </div>
+          <div className="slash-menu__list" id="slash-menu-list" role="listbox">
+            {(() => {
+              let lastGroup = "";
+              return slashFiltered.map((c, i) => {
+                const groups: React.ReactNode[] = [];
+                if (c.group !== lastGroup) {
+                  lastGroup = c.group;
+                  groups.push(<div key={"g-"+c.group} className="slash-menu__group">{slashGroupLabel(c.group)}</div>);
+                }
+                groups.push(
+                  <button
+                    key={c.cmd}
+                    type="button"
+                    role="option"
+                    aria-selected={i === slashIndex}
+                    className={"slash-menu__item" + (i === slashIndex ? " slash-menu__item--active" : "")}
+                    onMouseEnter={() => setSlashIndex(i)}
+                    onClick={() => { setText("/" + c.cmd + " "); setSlashOpen(false); inputRef.current?.focus(); }}
+                  >
+                    <span className="slash-menu__name">/{c.cmd}</span>
+                    <span className="slash-menu__desc">{c.desc}</span>
+                    <span className={"slash-menu__pill" + (c.danger ? " slash-menu__pill--danger" : "")}>{c.danger ? __("danger") : slashGroupLabel(c.group)}</span>
+                    <span className="slash-menu__sig">{c.sig}</span>
+                  </button>
+                );
+                return groups;
+              });
+            })()}
+          </div>
+          <div className="slash-menu__foot">
+            <span>{__("command_nav")}</span>
+            <span>{slashFiltered.length}</span>
+          </div>
         </div>
       )}
       <div className="composer">
